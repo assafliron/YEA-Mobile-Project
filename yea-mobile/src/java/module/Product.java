@@ -1,4 +1,4 @@
-/*
+package module;/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
  */
@@ -18,7 +18,7 @@ import javax.faces.context.FacesContext;
 public class Product {
 
     /**
-     * Creates a new instance of Product
+     * Creates a new instance of module.Product
      */
     public Product() {
     }

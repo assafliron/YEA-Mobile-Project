@@ -1,4 +1,5 @@
-import javax.ejb.EJB;
+package module;
+
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
 import javax.faces.application.FacesMessage;

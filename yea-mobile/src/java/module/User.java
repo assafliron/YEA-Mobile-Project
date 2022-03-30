@@ -1,8 +1,11 @@
-/*
+package module;/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
  */
 
+import database.Queries;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -19,7 +22,7 @@ import javax.faces.context.FacesContext;
 public class User {
 
     /**
-     * Creates a new instance of User
+     * Creates a new instance of module.User
      */
     public User() {
     }
@@ -35,6 +38,19 @@ public class User {
     private boolean manager;
     private boolean active;
 
+    public User(String username, String firstName, String lastName, String email, String password, String phoneNumber, Date registrationDate, Date birthDate, boolean manager, boolean active) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.registrationDate = registrationDate;
+        this.birthDate = birthDate;
+        this.manager = manager;
+        this.active = active;
+    }
+
     public String save(boolean newUser) {
         // TODO: Validate all user fields & save to database
         // TODO: If isNewUser - validate that the username doesn't already exist
@@ -47,6 +63,12 @@ public class User {
 
     public static ArrayList<User> getUsersList() {
         // TODO: return the users from the Data base instead of a static list
+        try {
+            return Queries.getInstance().getUserList();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();//TODO @assafLiron handle exception
+        }
         ArrayList<User> usersList = new ArrayList<User>() {
             {
                 User user = new User();

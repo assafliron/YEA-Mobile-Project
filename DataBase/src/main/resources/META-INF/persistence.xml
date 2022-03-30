@@ -5,6 +5,6 @@
              version="2.2">
     <persistence-unit name="default">
 
-        <class>entity.User</class>
+        <class>entity.module.User</class>
     </persistence-unit>
 </persistence>
