@@ -14,7 +14,6 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 
 /**
- *
  * @author assafliron
  */
 @ManagedBean
@@ -65,8 +64,7 @@ public class User {
         // TODO: return the users from the Data base instead of a static list
         try {
             return Queries.getInstance().getUserList();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();//TODO @assafLiron handle exception
         }
         ArrayList<User> usersList = new ArrayList<User>() {
@@ -129,7 +127,7 @@ public class User {
         // TODO: Add cart class (?)
         //TODO: get cart the user's cart from the DB
     }
-    
+
     public void addProductToCart(Product product) {
         //TODO: Add the product to the user's cart
     }

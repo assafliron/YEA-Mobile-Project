@@ -1,32 +1,44 @@
-package database;
+package Yishai;
 
 
-import module.User;
+import entity.User;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class Queries {
 
     private static Queries singleton = null;
-    public static  Queries getInstance(){
-        if(singleton == null){
+
+    public static Queries getInstance() {
+        if (singleton == null) {
             singleton = new Queries();
         }
         return singleton;
     }
 
-    private Queries(){
+    private Queries() {
         db = new DatabaseConnection();
     }
 
     private DatabaseConnection db;
 
     public boolean addUser(User user) {
+        // setting the EntityManager
+        EntityManagerFactory entityManagerFactory =
+                Persistence.createEntityManagerFactory("default");
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        // adding the user:
+        entityManager.persist(user);
+        entityManager.getTransaction().commit();
+
+
         String addUserQuery = "XXX"; // TODO: @Elad
 
 

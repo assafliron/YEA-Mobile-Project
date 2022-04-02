@@ -23,6 +23,7 @@ public class User {
     public User() {
     }
 
+
     @Id
     private String username;
     // other fields:
@@ -50,6 +51,20 @@ public class User {
     private List<Payment> payments;
 
     // -------------------------------------------
+    // constructor:
+    public User(String username, String firstName, String lastName, String email, String password, String phoneNumber, Date registrationDate, Date birthDate, boolean manager, boolean active) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.registrationDate = registrationDate;
+        this.birthDate = birthDate;
+        this.manager = manager;
+        this.active = active;
+    }
+
     // functions:
 
     public String save(boolean newUser) {
