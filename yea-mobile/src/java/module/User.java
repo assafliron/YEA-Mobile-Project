@@ -61,13 +61,49 @@ public class User {
     }
 
     public static ArrayList<User> getUsersList() {
-        try {
-            // TODO: check that this works
-            return Queries.getInstance().getUserList();
-        } catch (SQLException e) {
-            e.printStackTrace();//TODO @assafLiron handle exception
-        }
-        return null;
+//TODO: @Ishai - please uncomment this once it works (it causes compilation errors)
+//        try {
+//            // TODO: check that this works
+//            return Queries.getInstance().getUserList();
+//        } catch (SQLException e) {
+//            e.printStackTrace();//TODO @assafLiron handle exception
+//        }
+        return new ArrayList<User>() {
+            {
+                add(new User() {
+                    {
+                        setUsername("assaflir");
+                        setPassword("aaaa");
+                        setFirstName("Assaf");
+                        setLastName("Liron");
+                        setManager(false);
+                    }
+                });
+                add(new User() {
+                    {
+                        setUsername("ishaiher");
+                        setPassword("aaaa");
+                        setFirstName("Ishai");
+                        setLastName("Herman");
+                        setManager(true);
+                    }
+                });
+            }
+        };
+//        return null;
+    }
+
+    public ArrayList<Order> getOrdersOfUser() {
+        ArrayList<Order> ordersOfUser = new ArrayList<Order>() {
+            {
+                for (Order o : Order.getOrdersList()) {
+                    if (this.equals(o.getUser())) {
+                        add(o);
+                    }
+                }
+            }
+        };
+        return Order.getOrdersList();
     }
 
     public static String edit(String username) {
@@ -109,9 +145,11 @@ public class User {
         return "/user.xhtml?faces-redirect=true";
     }
 
-    public void getCart() {
-        // TODO: Add cart class (?)
-        //TODO: get cart the user's cart from the DB
+    public String getCurrentOrder() {
+        //TODO: @Ishai - put the current user's order in the context
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        sessionMap.put("order", Order.getOrdersList().get(0));
+        return "/order.xhtml?faces-redirect=true";
     }
 
     public void addProductToCart(Product product) {

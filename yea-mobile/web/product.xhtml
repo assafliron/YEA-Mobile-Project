@@ -23,11 +23,11 @@
                     </div>  
                     <hr/>  
                     <div class="form-group row">  
-                        <h:outputLabel for="pid" class="control-label col-sm-4 text-right">module.Product ID</h:outputLabel>
+                        <h:outputLabel for="pid" class="control-label col-sm-4 text-right">Product ID</h:outputLabel>
                         <div class="col-sm-4">  
                             <h:inputText id="pid-id" value="#{product.pid}" class="form-control"   
                                          validatorMessage="PID is required"
-                                         disabled="#{not(loginController.isUserLoggedIn())}">  
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -36,7 +36,7 @@
                         <div class="col-sm-4">  
                             <h:inputText id="brand-id" value="#{product.brand}" class="form-control"   
                                          validatorMessage="Brand is required"
-                                         disabled="#{not(loginController.isUserLoggedIn())}">  
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -45,7 +45,7 @@
                         <div class="col-sm-4">  
                             <h:inputText id="storageCapacity-id" value="#{product.storageCapacity}" class="form-control"   
                                          validatorMessage="Storage Capacity is required"
-                                         disabled="#{not(loginController.isUserLoggedIn())}">  
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -54,7 +54,7 @@
                         <div class="col-sm-4">  
                             <h:inputText id="weight-id" value="#{product.weight}" class="form-control"   
                                          validatorMessage="Weight is required"
-                                         disabled="#{not(loginController.isUserLoggedIn())}">  
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>  
@@ -63,7 +63,7 @@
                         <div class="col-sm-4">  
                             <h:inputText id="operatingSystem-id" value="#{product.operatingSystem}" class="form-control"   
                                          validatorMessage="Operating System is required"
-                                         disabled="#{not(loginController.isUserLoggedIn())}">  
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -72,7 +72,7 @@
                         <div class="col-sm-4">  
                             <h:inputText id="price-id" value="#{product.price}" class="form-control"   
                                          validatorMessage="Price is required"
-                                         disabled="#{not(loginController.isUserLoggedIn())}">  
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -81,7 +81,7 @@
                         <div class="col-sm-4">  
                             <h:inputText  id="inStock-id" value="#{product.inStock}" class="form-control"   
                                           validatorMessage="In stock is required"
-                                          disabled="#{not(loginController.isUserLoggedIn())}">  
+                                          disabled="#{not(loginController.isManagerLoggedIn())}">  
                             </h:inputText>  
                         </div>  
                     </div>

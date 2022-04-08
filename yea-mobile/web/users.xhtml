@@ -15,7 +15,7 @@
             <ui:define name="content">  
                 <h:form>  
                     <center>  
-                        <h2><h:outputText value="module.User Records"/></h2>
+                        <h2><h:outputText value="User Records"/></h2>
                     </center>  
                     <h:dataTable binding="#{table}" value="#{user.getUsersList()}" var="u"   
                                  class="table table-striped table-hover table-bordered">  
@@ -55,7 +55,7 @@
                         </h:column>  
                     </h:dataTable>  
                     <center><h:commandButton action = "#{user.createNewUser()}"   
-                                             value="Create New module.User" class="btn btn-success"></h:commandButton></center>
+                                             value="Create New User" class="btn btn-success"></h:commandButton></center>
                 </h:form>
             </ui:define>
         </ui:composition>  

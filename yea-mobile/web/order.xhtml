@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <meta http-equiv="Content-Type"  
+              content="text/html; charset=UTF-8" />  
+        <title>Order Details</title>
+    </h:head>
+    <h:body> 
+        <ui:composition template="./siteTemplate.xhtml">  
+            <ui:define name="content">
+
+                <h:form id="form" class="form-horizontal">  
+                    <div class="form-group row">  
+                        <div class="col-sm-4"></div>  
+                        <div  class="col-sm-4">  
+                            <h2 style="text-align: center">Order Details</h2>
+                        </div>  
+                    </div>  
+                    <hr/>  
+                    <div class="form-group row">  
+                        <h:outputLabel for="oid" class="control-label col-sm-4 text-right">Order ID</h:outputLabel>
+                        <div class="col-sm-4">  
+                            <h:inputText id="oid-id" value="#{order.oid}" class="form-control"   
+                                         validatorMessage="OID is required"
+                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <div class="form-group row">  
+                        <h:outputLabel for="user" class="control-label col-sm-4 text-right">User</h:outputLabel>
+                        <div class="col-sm-4">  
+                            <h:inputText id="user-id" value="#{order.getUser().firstName} #{order.getUser().lastName}" class="form-control"
+                                         disabled="true">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <c:if test="#{not(order.isCurrent())}">
+                        <div class="form-group row">  
+                            <h:outputLabel for="date" class="control-label col-sm-4 text-right">Date</h:outputLabel>  
+                            <div class="col-sm-4">  
+                                <h:inputText id="date-id" value="#{order.orderDate}" class="form-control"   
+                                             disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                </h:inputText>  
+                            </div>  
+                        </div>
+                    </c:if>
+                    <c:if test="#{not(order.isCurrent())}">
+                        <div class="form-group row">  
+                            <h:outputLabel for="time" class="control-label col-sm-4 text-right">Time</h:outputLabel>  
+                            <div class="col-sm-4">  
+                                <h:inputText id="brand-id" value="#{order.orderTime}" class="form-control"   
+                                             disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                </h:inputText>  
+                            </div>  
+                        </div>
+                    </c:if>
+                    <div class="form-group row">  
+                        <h:outputLabel for="destCity" class="control-label col-sm-4 text-right">Destination City</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="destCity-id" value="#{order.destCity}" class="form-control"   
+                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <div class="form-group row">  
+                        <h:outputLabel for="destStreet" class="control-label col-sm-4 text-right">Destination Street</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="destStreet-id" value="#{order.destStreet}" class="form-control"   
+                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <div class="form-group row">  
+                        <h:outputLabel for="destHouseNumber" class="control-label col-sm-4 text-right">Destination House Number</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="destHouseNumber-id" value="#{order.destHouseNumber}" class="form-control"   
+                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                            </div>  
+                    </div>
+                    <div class="form-group row">  
+                        <h:outputLabel for="zip" class="control-label col-sm-4 text-right">Zip Code</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="zip-id" value="#{order.zip}" class="form-control"   
+                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <c:if test="#{not(order.isCurrent())}">
+                        <div class="form-group row">  
+                            <h:outputLabel for="provided" class="control-label col-sm-4 text-right">Provided</h:outputLabel>  
+                            <div class="col-sm-4">  
+                                <h:selectBooleanCheckbox id="provided-id" value="#{order.provided}" class="form-control"   
+                                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                </h:selectBooleanCheckbox>
+                            </div>  
+                        </div>
+                    </c:if>
+                    <div class="form-group row">  
+                        <h:outputLabel for="totalPrice" class="control-label col-sm-4 text-right">Total Price</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="totalPrice-id" value="#{order.totalPrice}" class="form-control"   
+                                         disabled="true">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <!--<! TODO: add product list w/ number of time for each time, and include price for each item --> 
+                    
+                    <c:if test="#{order.isCurrent()}">
+                        <div class="form-group row">  
+                            <div class="col-sm-4"></div>  
+                            <div class="col-sm-4">  
+                                <div class="col-sm-2"> 
+                                    <h:commandButton value="Place order" action="#{order.placeOrder()}" class="btn btn-success"   
+                                                     style="width: 100px;"></h:commandButton>  
+                                </div>  
+                                <div class="col-sm-1">  
+                                </div>  
+                            </div>  
+                        </div>
+                    </c:if> 
+                    <c:if test="#{loginController.isManagerLoggedIn()}">
+                        <div class="form-group row">  
+                            <div class="col-sm-4"></div>  
+                            <div class="col-sm-4">  
+                                <div class="col-sm-2"> 
+                                    <h:commandButton value="Save" action="#{order.save()}" class="btn btn-success"   
+                                                     style="width: 80px;"></h:commandButton>  
+                                </div>  
+                                <div class="col-sm-1">  
+                                </div>  
+                            </div>  
+                        </div>
+                    </c:if>  
+                </h:form>  
+            </ui:define>
+        </ui:composition>  
+    </h:body>
+</html>

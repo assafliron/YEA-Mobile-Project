@@ -51,7 +51,9 @@
                                 <c:if test="#{loginController.isManagerLoggedIn()}">
                                     <li><a href="./users.xhtml?faces-redirect=true">Users</a></li>
                                 </c:if>
-
+                                <c:if test="#{loginController.isUserLoggedIn()}">
+                                    <li><a href="./orders.xhtml?faces-redirect=true">Orders</a></li>
+                                </c:if>
                                 <li><a href="#">Contact</a></li>
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
@@ -64,8 +66,8 @@
                                         <li><h:commandLink value = "Login" action = "login.xhtml?faces-redirect=true" /></li>
                                     </c:otherwise>
                                 </c:choose>
-                                <c:if test="#{loggedUser.manager}">
-                                    <li><h:commandLink value = "Cart" action = "#{user.getCart()}" /></li>
+                                <c:if test="#{loginController.isUserLoggedIn()}">
+                                    <li><h:commandLink value = "Cart" action = "#{user.getCurrentOrder()}" /></li>
                                 </c:if>
                             </ul>
                         </div>
