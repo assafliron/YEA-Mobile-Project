@@ -8,7 +8,7 @@
     <h:head>
         <meta http-equiv="Content-Type"  
               content="text/html; charset=UTF-8" />  
-        <title>module.User Details</title>
+        <title>User Details</title>
     </h:head>
     <h:body>
         <ui:composition template="./siteTemplate.xhtml">  
@@ -18,12 +18,12 @@
                     <div class="form-group row">  
                         <div class="col-sm-4"></div>  
                         <div  class="col-sm-4">  
-                            <h2 style="text-align: center">module.User Details</h2>
+                            <h2 style="text-align: center">User Details</h2>
                         </div>  
                     </div>  
                     <hr/>  
                     <div class="form-group row">  
-                        <h:outputLabel for="username" class="control-label col-sm-4 text-right">module.User Name</h:outputLabel>
+                        <h:outputLabel for="username" class="control-label col-sm-4 text-right">User Name</h:outputLabel>
                         <div class="col-sm-4">  
                             <h:inputText id="username-id" value="#{user.username}" class="form-control"   
                                          validatorMessage="Username is required">  
@@ -81,7 +81,7 @@
                     </div>
                     <c:if test="#{loginController.isManagerLoggedIn()}">
                         <div class="form-group row">  
-                            <h:outputLabel for="manager" class="control-label col-sm-4 text-right">The module.User is a Manager</h:outputLabel>
+                            <h:outputLabel for="manager" class="control-label col-sm-4 text-right">The User is a Manager</h:outputLabel>
                             <div class="col-sm-4">  
                                 <h:selectBooleanCheckbox id="manager-id" value="#{user.manager}" class="form-check-input"   
                                                          validatorMessage="Specify whether the user is a manager">  
@@ -89,7 +89,7 @@
                             </div>  
                         </div>
                         <div class="form-group row">  
-                            <h:outputLabel for="active" class="control-label col-sm-4 text-right">The module.User is active</h:outputLabel>
+                            <h:outputLabel for="active" class="control-label col-sm-4 text-right">The User is active</h:outputLabel>
                             <div class="col-sm-4">  
                                 <h:selectBooleanCheckbox id="active-id" value="#{user.active}" class="form-check-input"   
                                                          validatorMessage="Specify whether the user is active">  

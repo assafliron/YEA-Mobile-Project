@@ -54,7 +54,7 @@ public class User {
     public String save(boolean newUser) {
         // TODO: Validate all user fields & save to database
         // TODO: If isNewUser - validate that the username doesn't already exist
-        // TODO: If not isNewUser - update 
+        // TODO: If not isNewUser - update
         if (newUser) {
             return "/index.xhtml?faces-redirect=true";
         }
@@ -62,28 +62,14 @@ public class User {
     }
 
     public static ArrayList<User> getUsersList() {
-        // TODO: return the users from the Data base instead of a static list
         try {
+            // TODO: check that this works
             return Queries.getInstance().getUserList();
         }
         catch (SQLException e) {
             e.printStackTrace();//TODO @assafLiron handle exception
         }
-        ArrayList<User> usersList = new ArrayList<User>() {
-            {
-                User user = new User();
-                user.setUsername("assaflir");
-                user.setFirstName("assaf");
-                user.setLastName("Liron");
-                user.setPassword("aaaa");
-                user.setEmail("aa@gmail.com");
-                user.setManager(true);
-                user.setActive(true);
-                add(user);
-            }
-        };
-
-        return usersList;
+        return null;
     }
 
     public static String edit(String username) {
@@ -110,7 +96,7 @@ public class User {
     public static User find(String username, String password) {
         // TODO: return the user in the DB with the received username and password
         // TODO: if there is no such user - return null
-        for (User user : getUsersList()) {
+        for (User user : getUsersList()) { // TODO: get user directly from database instead
             if (user.username.equals(username) && user.password.equals(password)) {
                 return user;
             }
