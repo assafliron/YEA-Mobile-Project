@@ -8,6 +8,11 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
@@ -15,6 +20,7 @@ import javax.faces.context.FacesContext;
  */
 @ManagedBean
 @RequestScoped
+@Entity
 public class Product {
 
     /**
@@ -23,7 +29,11 @@ public class Product {
     public Product() {
     }
     
-    private String pid;
+    @Id
+    @GeneratedValue
+    private Integer pid;
+
+    // other fields:
     private String name;
     private String brand;
     private String color;
@@ -44,7 +54,7 @@ public class Product {
         // TODO: return the prodcuts from the Data base instead of a static list
         ArrayList<Product> productsList = new ArrayList<Product>() {{
           Product product = new Product();
-          product.setPid("1234");
+          product.setPid(1234);
           product.setBrand("Apple");
           product.setName("Iphone 6s");
           product.setColor("Black");
@@ -87,12 +97,11 @@ public class Product {
         return "/product.xhtml?faces-redirect=true";
     }
     
-    
-    public String getPid() {
+    public Integer getPid() {
         return pid;
     }
 
-    public void setPid(String pid) {
+    public void setPid(Integer pid) {
         this.pid = pid;
     }
 
