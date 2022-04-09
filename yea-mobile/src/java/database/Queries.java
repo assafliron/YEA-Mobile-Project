@@ -82,14 +82,14 @@ public class Queries {
     }
 
 
-
-
     public ArrayList<User> getUserList() {
         EntityManagerFactory entityManagerFactory =
                 Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        TypedQuery<User> query = entityManager.createQuery("", User.class); //TODO: @Elad get all users query
+        // get all users query
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u", User.class);
+
         return new ArrayList<>(query.getResultList());
 //
 //        String getUserListQuery = "XXX"; // TODO: @Elad
