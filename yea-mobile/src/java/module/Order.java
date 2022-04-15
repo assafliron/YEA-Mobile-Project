@@ -41,6 +41,20 @@ public class Order {
         }};
     }
     
+    public static ArrayList<Order> getOrdersOfUser(SiteUser user) {
+        ArrayList<Order> ordersOfUser = new ArrayList<>();
+        for (Order order : getOrdersList()) {
+            if (user.equals(order.getUser())) {
+                ordersOfUser.add(order);
+            }
+        }
+        return ordersOfUser;
+    }
+    
+    public void save() {
+        //TODO: @Ishai - save order to DB
+    }
+    
     public HashMap<Product, Integer> getIncludedProducts() {
         //TODO: @Ishai - return <product, number of times included> for products included in this order
         return new HashMap<Product, Integer>() {{
@@ -50,20 +64,9 @@ public class Order {
         }};
     }
     
-    public String placeOrder() {
-        //TODO: @Ishai - "close this current order" - add a date etc. & oprn a new order for this user
-        return "/order.xhtml?faces-redirect=true";
-    }
-
-    // Returns true if the order is the user's current order
-    public boolean isCurrent() {
-        // TODO: @Ishai
-        return true;
-    }
-    
-    public User getUser() {
+    public SiteUser getUser() {
         //TODO: @Ishai - return the user that this order is for
-        return User.getUsersList().get(0);
+        return SiteUser.getUsersList().get(0);
     }
     
     public static String edit(String oid) {

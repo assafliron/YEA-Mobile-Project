@@ -22,7 +22,7 @@ public class LoginController {
     private final static String LOGGED_USER = "loggedUser";
     
     public String login() {
-        User user = User.find(username, password);
+        SiteUser user = SiteUser.find(username, password);
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (user == null) {
@@ -49,7 +49,7 @@ public class LoginController {
     public static boolean isManagerLoggedIn() {
         FacesContext context = FacesContext.getCurrentInstance();
         return isUserLoggedIn() && 
-                ((User)(context.getExternalContext().getSessionMap().get(LOGGED_USER))).isManager();
+                ((SiteUser)(context.getExternalContext().getSessionMap().get(LOGGED_USER))).isManager();
     }
 
     public String getUsername() {

@@ -59,7 +59,7 @@
                             <ul class="nav navbar-nav navbar-right">
                                 <c:choose>
                                     <c:when test="#{loginController.isUserLoggedIn()}">
-                                        <li><h:commandLink value = "Your Account" action = "#{user.edit(loggedUser.username)}" /></li>
+                                        <li><h:commandLink value = "Your Account" action = "#{siteUser.edit(loggedUser.username)}" /></li>
                                         <li><h:commandLink value = "Logout" action = "#{loginController.logout()}"/></li>
                                     </c:when>
                                     <c:otherwise>
@@ -67,7 +67,7 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <c:if test="#{loginController.isUserLoggedIn()}">
-                                    <li><h:commandLink value = "Cart" action = "#{user.getCurrentOrder()}" /></li>
+                                    <li><h:commandLink value = "Cart" action = "cart.xhtml?faces-redirect=true" /></li>
                                 </c:if>
                             </ul>
                         </div>

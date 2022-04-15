@@ -27,7 +27,7 @@
                         <div class="col-sm-4">  
                             <h:inputText id="oid-id" value="#{order.oid}" class="form-control"   
                                          validatorMessage="OID is required"
-                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -39,31 +39,27 @@
                             </h:inputText>  
                         </div>  
                     </div>
-                    <c:if test="#{not(order.isCurrent())}">
-                        <div class="form-group row">  
-                            <h:outputLabel for="date" class="control-label col-sm-4 text-right">Date</h:outputLabel>  
-                            <div class="col-sm-4">  
-                                <h:inputText id="date-id" value="#{order.orderDate}" class="form-control"   
-                                             disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
-                                </h:inputText>  
-                            </div>  
-                        </div>
-                    </c:if>
-                    <c:if test="#{not(order.isCurrent())}">
-                        <div class="form-group row">  
-                            <h:outputLabel for="time" class="control-label col-sm-4 text-right">Time</h:outputLabel>  
-                            <div class="col-sm-4">  
-                                <h:inputText id="brand-id" value="#{order.orderTime}" class="form-control"   
-                                             disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
-                                </h:inputText>  
-                            </div>  
-                        </div>
-                    </c:if>
+                    <div class="form-group row">  
+                        <h:outputLabel for="date" class="control-label col-sm-4 text-right">Date</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="date-id" value="#{order.orderDate}" class="form-control"   
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <div class="form-group row">  
+                        <h:outputLabel for="time" class="control-label col-sm-4 text-right">Time</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:inputText id="brand-id" value="#{order.orderTime}" class="form-control"   
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
                     <div class="form-group row">  
                         <h:outputLabel for="destCity" class="control-label col-sm-4 text-right">Destination City</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="destCity-id" value="#{order.destCity}" class="form-control"   
-                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -71,7 +67,7 @@
                         <h:outputLabel for="destStreet" class="control-label col-sm-4 text-right">Destination Street</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="destStreet-id" value="#{order.destStreet}" class="form-control"   
-                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -79,28 +75,26 @@
                         <h:outputLabel for="destHouseNumber" class="control-label col-sm-4 text-right">Destination House Number</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="destHouseNumber-id" value="#{order.destHouseNumber}" class="form-control"   
-                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
-                            </div>  
+                        </div>  
                     </div>
                     <div class="form-group row">  
                         <h:outputLabel for="zip" class="control-label col-sm-4 text-right">Zip Code</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="zip-id" value="#{order.zip}" class="form-control"   
-                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
+                                         disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
                     </div>
-                    <c:if test="#{not(order.isCurrent())}">
-                        <div class="form-group row">  
-                            <h:outputLabel for="provided" class="control-label col-sm-4 text-right">Provided</h:outputLabel>  
-                            <div class="col-sm-4">  
-                                <h:selectBooleanCheckbox id="provided-id" value="#{order.provided}" class="form-control"   
-                                                         disabled="#{not(order.isCurrent() or loginController.isManagerLoggedIn())}">  
-                                </h:selectBooleanCheckbox>
-                            </div>  
-                        </div>
-                    </c:if>
+                    <div class="form-group row">  
+                        <h:outputLabel for="provided" class="control-label col-sm-4 text-right">Provided</h:outputLabel>  
+                        <div class="col-sm-4">  
+                            <h:selectBooleanCheckbox id="provided-id" value="#{order.provided}" class="form-control"   
+                                                     disabled="#{loginController.isManagerLoggedIn()}">  
+                            </h:selectBooleanCheckbox>
+                        </div>  
+                    </div>
                     <div class="form-group row">  
                         <h:outputLabel for="totalPrice" class="control-label col-sm-4 text-right">Total Price</h:outputLabel>  
                         <div class="col-sm-4">  
@@ -110,20 +104,7 @@
                         </div>  
                     </div>
                     <!--<! TODO: add product list w/ number of time for each time, and include price for each item --> 
-                    
-                    <c:if test="#{order.isCurrent()}">
-                        <div class="form-group row">  
-                            <div class="col-sm-4"></div>  
-                            <div class="col-sm-4">  
-                                <div class="col-sm-2"> 
-                                    <h:commandButton value="Place order" action="#{order.placeOrder()}" class="btn btn-success"   
-                                                     style="width: 100px;"></h:commandButton>  
-                                </div>  
-                                <div class="col-sm-1">  
-                                </div>  
-                            </div>  
-                        </div>
-                    </c:if> 
+
                     <c:if test="#{loginController.isManagerLoggedIn()}">
                         <div class="form-group row">  
                             <div class="col-sm-4"></div>  

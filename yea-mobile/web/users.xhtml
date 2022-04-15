@@ -17,7 +17,7 @@
                     <center>  
                         <h2><h:outputText value="User Records"/></h2>
                     </center>  
-                    <h:dataTable binding="#{table}" value="#{user.getUsersList()}" var="u"   
+                    <h:dataTable binding="#{table}" value="#{siteUser.getUsersList()}" var="u"   
                                  class="table table-striped table-hover table-bordered">  
                         <h:column>  
                             <f:facet name="header"></f:facet>  
@@ -45,16 +45,16 @@
                         </h:column>
                         <h:column>  
                             <f:facet name="header">Update</f:facet>  
-                            <h:commandButton action = "#{user.edit(u.username)}" value="Update" class="btn btn-primary">  
+                            <h:commandButton action = "#{siteUser.edit(u.username)}" value="Update" class="btn btn-primary">  
                             </h:commandButton>  
                         </h:column>  
                         <h:column>  
                             <f:facet name="header">Delete</f:facet>  
-                            <h:commandButton action = "#{user.delete(u.username)}" value="Delete" class="btn btn-danger">  
+                            <h:commandButton action = "#{siteUser.delete(u.username)}" value="Delete" class="btn btn-danger">  
                             </h:commandButton>  
                         </h:column>  
                     </h:dataTable>  
-                    <center><h:commandButton action = "#{user.createNewUser()}"   
+                    <center><h:commandButton action = "#{siteUser.createNewUser()}"   
                                              value="Create New User" class="btn btn-success"></h:commandButton></center>
                 </h:form>
             </ui:define>

@@ -18,9 +18,10 @@ import java.util.Map;
  *
  * @author assafliron
  */
+
+@Entity
 @ManagedBean
 @RequestScoped
-@Entity
 public class Product {
 
     /**
@@ -78,7 +79,7 @@ public class Product {
                 break;
             }
         }
-        
+          
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("product", product);
         return "/product.xhtml?faces-redirect=true";

@@ -1,8 +1,14 @@
-package module;/*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+package module;
 
+import java.io.Serializable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import database.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,21 +21,17 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.persistence.metamodel.EntityType;
 
 /**
+ *
  * @author assafliron
  */
+@Entity
+@Table(name = "SITEUSER")
 @ManagedBean
 @RequestScoped
-@Entity
-public class User {
-
-    /**
-     * Creates a new instance of User
-     */
-    public User() {
-    }
-
+public class SiteUser implements Serializable {
 
     @Id
     private String username;
@@ -39,7 +41,9 @@ public class User {
     private String email;
     private String password;
     private String phoneNumber;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date registrationDate;
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date birthDate;
     private boolean manager;
     private boolean active;
@@ -59,7 +63,11 @@ public class User {
 
     // -------------------------------------------
     // constructor:
-    public User(String username, String firstName, String lastName, String email, String password, String phoneNumber, Date registrationDate, Date birthDate, boolean manager, boolean active) {
+    public SiteUser() {
+
+    }
+
+    public SiteUser(String username, String firstName, String lastName, String email, String password, String phoneNumber, Date registrationDate, Date birthDate, boolean manager, boolean active) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -72,13 +80,30 @@ public class User {
         this.active = active;
     }
 
-        // functions:
+    // functions:
+    public void addToCart(Product product) {
+        //TODO: @Ishai add 1 instance of this product to the user's cart
+    }
+
+    public void removeFromCart(Product product) {
+        //TODO: @Ishai remove 1 instance of this product to the user's cart
+    }
+
+    public void checkoutCartToOrder(Payment payment) {
+        //TODO: @Ishai - turn the current user's cart into a saved order & clean current cart
+    }
+
+    public double getCartTotalPrice() {
+        //TODO: @Ishai - return the cart's total
+        return 10;
+    }
+
     private boolean isValidEmail() {
         Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         Matcher matcher = p.matcher(this.email);
         return matcher.find();
     }
-    
+
     private boolean isValidPhoneNumber() {
         Pattern p = Pattern.compile("\\d{10}|(?:\\d{3}-){2}\\d{4}|\\(\\d{3}\\)\\d{3}-?\\d{4}", Pattern.CASE_INSENSITIVE);
         Matcher matcher = p.matcher(this.phoneNumber);
@@ -86,14 +111,18 @@ public class User {
     }
 
     private boolean isNewUser() {
-        return  Queries.getInstance().isNewUser(this);
+        return Queries.getInstance().isNewUser(this);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SiteUser user = (SiteUser) o;
         return username.equals(user.username);
     }
 
@@ -103,21 +132,21 @@ public class User {
     }
 
     private boolean isValidUser() {
-        return this.username != null &&
-                !this.username.isEmpty() &&
-                isValidEmail() &&
-                isValidPhoneNumber() &&
-                this.firstName != null &&
-                !this.firstName.isEmpty() &&
-                this.lastName != null &&
-                !this.lastName.isEmpty() &&
-                this.password != null &&
-                !this.password.isEmpty() &&
-                this.birthDate != null &&
-                this.birthDate.after(new GregorianCalendar(1900, 1, 1).getTime()) &&
-                this.birthDate.before(Calendar.getInstance().getTime());
+        return this.username != null
+                && !this.username.isEmpty()
+                && isValidEmail()
+                && isValidPhoneNumber()
+                && this.firstName != null
+                && !this.firstName.isEmpty()
+                && this.lastName != null
+                && !this.lastName.isEmpty()
+                && this.password != null
+                && !this.password.isEmpty()
+                && this.birthDate != null
+                && this.birthDate.after(new GregorianCalendar(1900, 1, 1).getTime())
+                && this.birthDate.before(Calendar.getInstance().getTime());
     }
-    
+
     public String save(boolean newUser) {
         // TODO: Validate all user fields & save to database
         if (!isValidUser()) {
@@ -133,28 +162,12 @@ public class User {
         return "/index.xhtml?faces-redirect=true";
     }
 
-
-    public static ArrayList<User> getUsersList() {
-//        // TODO: return the users from the Data base instead of a static list
-//        ArrayList<User> usersList = new ArrayList<User>() {
-//            {
-//                User user = new User();
-//                user.setUsername("assaflir");
-//                user.setFirstName("assaf");
-//                user.setLastName("Liron");
-//                user.setPassword("aaaa");
-//                user.setEmail("aa@gmail.com");
-//                user.setManager(true);
-//                user.setActive(true);
-//                add(user);
-//            }
-//        };
-//
-//        return usersList;
-
+    public static ArrayList<SiteUser> getUsersList() {
         return Queries.getInstance().getUserList();
     }
+
     public ArrayList<Order> getOrdersOfUser() {
+        //TODO: @Ishai - get list of this user's orders from the DB
         ArrayList<Order> ordersOfUser = new ArrayList<Order>() {
             {
                 for (Order o : Order.getOrdersList()) {
@@ -168,17 +181,10 @@ public class User {
     }
 
     public static String edit(String username) {
-//        User user = null;
-        // TODO: return the user from the data base instead of from the static list
-//        for (User u : getUsersList()) {
-//            if (username.equals(u.username)) {
-//                user = u;
-//                break;
-//            }
-//        }
-        User user = Queries.getInstance().getUser(username);
-        if(user == null)
-            return "user not exists!" ; // TODO: @Assaf check
+        SiteUser user = Queries.getInstance().getUser(username);
+        if (user == null) {
+            return "user not exists!"; // TODO: @Assaf check
+        }
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("user", user);
         return "/user.xhtml?faces-redirect=true";
@@ -186,38 +192,48 @@ public class User {
 
     public static String delete(String username) {
         // TODO: delete the user from the database
-        User removedUser = Queries.getInstance().deleteUser(username);
-        if(removedUser != null){
+        SiteUser removedUser = Queries.getInstance().deleteUser(username);
+        if (removedUser != null) {
             return "user didn't exist in the first place..."; //TODO: @Assaf - what to do when trying to remove user that doesn't exist
         }
         return "/index.xhtml?faces-redirect=true";
     }
 
-    public static User find(String username, String password) {
+    public static SiteUser find(String username, String password) {
         // TODO: return the user in the DB with the received username and password
         // TODO: if there is no such user - return null
-//        for (User user : getUsersList()) {
-//            if (user.username.equals(username) && user.password.equals(password)) {
-//                return user;
-//            }
-//        }
-        User user = Queries.getInstance().getUser(username);
-        if(user != null && user.password.equals(password))
+        for (SiteUser user : getUsersList()) {
+            if (user.username.equals(username) && user.password.equals(password)) {
                 return user;
+            }
+        }
+//TODO: @Ishai please return this once this works:
+//        SiteUser user = Queries.getInstance().getUser(username);
+//        if(user != null && user.password.equals(password))
+//                return user;
         return null;
     }
 
     // Redirects to user.xhtml with empty fields, for a user new to be created
     public static String createNewUser() {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        sessionMap.put("user", new User());
+        sessionMap.put("user", new SiteUser());
         return "/user.xhtml?faces-redirect=true";
     }
 
-    public List<Product> getCart() { //TODO:@assafLiron what do you expect to get ? changed to products list from VOID
-        // TODO: Add cart class (?)
+    public Map<Product, Integer> getCart() {
+        //TODO: @Ishai - I expect a <prodct, number of times this prodcut is in the cart> map
+        //TODO: @Ishai - I think we do need such a Cart class.
+        // @Elad - this class needs to be a many to many relationship between users and products - please take care of this
+        // @Elad - It has to be a class because we need an extra column for number of items
+        //
+
         //TODO: get cart the user's cart from the DB
-        return cart;
+        return new HashMap<Product, Integer>() {
+            {
+                put(Product.getProductsList().get(0), 2);
+            }
+        };
     }
 
     public void addProductToCart(Product product) {
@@ -304,5 +320,21 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<Payment> getPayments() {
+        return payments;
+    }
+
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
     }
 }
