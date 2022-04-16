@@ -23,9 +23,9 @@ public class Queries {
         return singleton;
     }
 
-    EntityManagerFactory entityManagerFactory =
-            Persistence.createEntityManagerFactory("yea-mobilePU");
-    EntityManager entityManager = entityManagerFactory.createEntityManager();
+    // Opened and closed automatically in SiteListener on server start & end, respectively
+    EntityManagerFactory entityManagerFactory;
+    EntityManager entityManager;
 
 
     private Queries() {
@@ -68,4 +68,12 @@ public class Queries {
 
         return new ArrayList<>(query.getResultList());
     }
+
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }  
 }

@@ -4,6 +4,7 @@
  */
 package module;
 
+import Utils.ErrorReporter;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -150,7 +151,13 @@ public class SiteUser implements Serializable {
     public String save(boolean newUser) {
         // TODO: Validate all user fields & save to database
         if (!isValidUser()) {
-            return "Not Valid User Data"; // TODO: @assafLiron check
+            // TODO: @Iishai - Please give more information for the error - 
+            // If the username is taken then "Username is taken error"
+            // if date is invalid then "date is invalid" error, etc...
+            ErrorReporter.addError("Not Valid User Data"); //@Ishai - this is how to return errors
+            // @Ishai - PS: 
+            // 1. you can add more than one error
+            // 2. when you add an error the function doesn't return, so you need to handle this accordingly (you can return the same page on success and on error)
         }
 
         // TODO: If isNewUser - validate that the username doesn't already exist

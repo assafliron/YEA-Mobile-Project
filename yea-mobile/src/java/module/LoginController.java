@@ -1,5 +1,6 @@
 package module;
 
+import Utils.ErrorReporter;
 import javax.inject.Named;
 import javax.enterprise.context.Dependent;
 import javax.faces.application.FacesMessage;
@@ -26,7 +27,7 @@ public class LoginController {
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (user == null) {
-            context.addMessage(null, new FacesMessage("Unknown login, try again"));
+            ErrorReporter.addError("Unknown login, try again");
             username = null;
             password = null;
             return null;
