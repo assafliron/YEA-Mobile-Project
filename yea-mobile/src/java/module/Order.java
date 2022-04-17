@@ -1,15 +1,16 @@
 package module;
 
-import java.util.ArrayList;
+import database.Queries;
+
+import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.OneToMany;
+
 import static module.Product.getProductsList;
 
 
@@ -23,13 +24,33 @@ public class Order {
 
     // all the other fields of the order:
     private Date orderDate;
-    private Date orderTime;
+    //private Date orderTime; // @TODO @elad - remove , orderDate include time
     private String destCity;
     private String destStreet;
     private int destHouseNumber;
     private String zip;
     private boolean provided;
     private int totalPrice;
+
+    @OneToMany
+    List<Product> products;
+
+    public Order(String destCity, String destStreet, int destHouseNumber, String zip) {
+        this.orderDate = Calendar.getInstance().getTime();
+        this.destCity = destCity;
+        this.destStreet = destStreet;
+        this.destHouseNumber = destHouseNumber;
+        this.zip = zip;
+        this.provided = false;
+        products = new ArrayList<>();
+        totalPrice = 0;
+    }
+
+    public void insertProducts (List<Product> products){
+        this.products.addAll(products);
+        Queries.getInstance().saveOrder(this);
+    }
+
     
     public static ArrayList<Order> getOrdersList() {
         //TODO: @Ishai - return a list of orders from the DB

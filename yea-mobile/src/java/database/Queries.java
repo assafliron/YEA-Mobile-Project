@@ -1,6 +1,7 @@
 package database;
 
 
+import module.Order;
 import module.SiteUser;
 
 import javax.persistence.EntityManager;
@@ -75,5 +76,12 @@ public class Queries {
 
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
-    }  
+    }
+
+    public void saveOrder(Order order) {
+        entityManager.getTransaction().begin();
+        // adding the order:
+        entityManager.persist(order);
+        entityManager.getTransaction().commit();
+    }
 }

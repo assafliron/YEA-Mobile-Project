@@ -5,12 +5,15 @@
 package module;
 
 import Utils.ErrorReporter;
+
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import database.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
@@ -25,7 +28,6 @@ import java.util.regex.Pattern;
 import javax.persistence.metamodel.EntityType;
 
 /**
- *
  * @author assafliron
  */
 @Entity
@@ -65,7 +67,7 @@ public class SiteUser implements Serializable {
     // -------------------------------------------
     // constructor:
     public SiteUser() {
-
+        cart = new ArrayList<>();
     }
 
     public SiteUser(String username, String firstName, String lastName, String email, String password, String phoneNumber, Date registrationDate, Date birthDate, boolean manager, boolean active) {
@@ -83,20 +85,34 @@ public class SiteUser implements Serializable {
 
     // functions:
     public void addToCart(Product product) {
-        //TODO: @Ishai add 1 instance of this product to the user's cart
+
+        cart.add(product);
+        save(false);
+
     }
 
-    public void removeFromCart(Product product) {
-        //TODO: @Ishai remove 1 instance of this product to the user's cart
+    public boolean removeFromCart(Product product) { // TODO @assafliron changed to boolean from void
+        boolean flag = cart.remove(product);
+        if(flag)
+            save(false);
+        return flag;
     }
+
 
     public void checkoutCartToOrder(Payment payment) {
         //TODO: @Ishai - turn the current user's cart into a saved order & clean current cart
+
+
+
     }
 
     public double getCartTotalPrice() {
-        //TODO: @Ishai - return the cart's total
-        return 10;
+      double sum = 0;
+      for(Product product:cart){
+          sum += product.getPrice();
+      }
+      return sum;
+
     }
 
     private boolean isValidEmail() {
@@ -149,7 +165,6 @@ public class SiteUser implements Serializable {
     }
 
     public String save(boolean newUser) {
-        // TODO: Validate all user fields & save to database
         if (!isValidUser()) {
             // TODO: @Iishai - Please give more information for the error - 
             // If the username is taken then "Username is taken error"
