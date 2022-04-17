@@ -58,8 +58,8 @@ public class SiteUser implements Serializable {
     // private List cart;
     // TODO (Elad) add a list for the quantities
 
-    @OneToMany(targetEntity = Order.class)
-    private Set<Order> orders;
+    @OneToMany(targetEntity = UserOrder.class)
+    private Set<UserOrder> orders;
 
     @ManyToMany
     private List<Payment> payments;
@@ -188,18 +188,18 @@ public class SiteUser implements Serializable {
         return Queries.getInstance().getUserList();
     }
 
-    public ArrayList<Order> getOrdersOfUser() {
+    public ArrayList<UserOrder> getOrdersOfUser() {
         //TODO: @Ishai - get list of this user's orders from the DB
-        ArrayList<Order> ordersOfUser = new ArrayList<Order>() {
+        ArrayList<UserOrder> ordersOfUser = new ArrayList<UserOrder>() {
             {
-                for (Order o : Order.getOrdersList()) {
+                for (UserOrder o : UserOrder.getOrdersList()) {
                     if (this.equals(o.getUser())) {
                         add(o);
                     }
                 }
             }
         };
-        return Order.getOrdersList();
+        return UserOrder.getOrdersList();
     }
 
     public static String edit(String username) {
@@ -344,11 +344,11 @@ public class SiteUser implements Serializable {
         this.active = active;
     }
 
-    public Set<Order> getOrders() {
+    public Set<UserOrder> getOrders() {
         return orders;
     }
 
-    public void setOrders(Set<Order> orders) {
+    public void setOrders(Set<UserOrder> orders) {
         this.orders = orders;
     }
 

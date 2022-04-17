@@ -25,7 +25,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="oid" class="control-label col-sm-4 text-right">Order ID</h:outputLabel>
                         <div class="col-sm-4">  
-                            <h:inputText id="oid-id" value="#{order.oid}" class="form-control"   
+                            <h:inputText id="oid-id" value="#{userOrder.oid}" class="form-control"   
                                          validatorMessage="OID is required"
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
@@ -34,7 +34,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="user" class="control-label col-sm-4 text-right">User</h:outputLabel>
                         <div class="col-sm-4">  
-                            <h:inputText id="user-id" value="#{order.getUser().firstName} #{order.getUser().lastName}" class="form-control"
+                            <h:inputText id="user-id" value="#{userOrder.getUser().firstName} #{userOrder.getUser().lastName}" class="form-control"
                                          disabled="true">  
                             </h:inputText>  
                         </div>  
@@ -42,7 +42,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="date" class="control-label col-sm-4 text-right">Date</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="date-id" value="#{order.orderDate}" class="form-control"   
+                            <h:inputText id="date-id" value="#{userOrder.orderDate}" class="form-control"   
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
@@ -50,7 +50,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="time" class="control-label col-sm-4 text-right">Time</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="brand-id" value="#{order.orderTime}" class="form-control"   
+                            <h:inputText id="brand-id" value="#{userOrder.orderTime}" class="form-control"   
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
@@ -58,7 +58,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="destCity" class="control-label col-sm-4 text-right">Destination City</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="destCity-id" value="#{order.destCity}" class="form-control"   
+                            <h:inputText id="destCity-id" value="#{userOrder.destCity}" class="form-control"   
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
@@ -66,7 +66,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="destStreet" class="control-label col-sm-4 text-right">Destination Street</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="destStreet-id" value="#{order.destStreet}" class="form-control"   
+                            <h:inputText id="destStreet-id" value="#{userOrder.destStreet}" class="form-control"   
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
@@ -74,7 +74,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="destHouseNumber" class="control-label col-sm-4 text-right">Destination House Number</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="destHouseNumber-id" value="#{order.destHouseNumber}" class="form-control"   
+                            <h:inputText id="destHouseNumber-id" value="#{userOrder.destHouseNumber}" class="form-control"   
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
@@ -82,7 +82,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="zip" class="control-label col-sm-4 text-right">Zip Code</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="zip-id" value="#{order.zip}" class="form-control"   
+                            <h:inputText id="zip-id" value="#{userOrder.zip}" class="form-control"   
                                          disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:inputText>  
                         </div>  
@@ -90,7 +90,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="provided" class="control-label col-sm-4 text-right">Provided</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:selectBooleanCheckbox id="provided-id" value="#{order.provided}" class="form-control"   
+                            <h:selectBooleanCheckbox id="provided-id" value="#{userOrder.provided}" class="form-control"   
                                                      disabled="#{loginController.isManagerLoggedIn()}">  
                             </h:selectBooleanCheckbox>
                         </div>  
@@ -98,7 +98,7 @@
                     <div class="form-group row">  
                         <h:outputLabel for="totalPrice" class="control-label col-sm-4 text-right">Total Price</h:outputLabel>  
                         <div class="col-sm-4">  
-                            <h:inputText id="totalPrice-id" value="#{order.totalPrice}" class="form-control"   
+                            <h:inputText id="totalPrice-id" value="#{userOrder.totalPrice}" class="form-control"   
                                          disabled="true">  
                             </h:inputText>  
                         </div>  
@@ -110,7 +110,7 @@
                             <div class="col-sm-4"></div>  
                             <div class="col-sm-4">  
                                 <div class="col-sm-2"> 
-                                    <h:commandButton value="Save" action="#{order.save()}" class="btn btn-success"   
+                                    <h:commandButton value="Save" action="#{userOrder.save()}" class="btn btn-success"   
                                                      style="width: 80px;"></h:commandButton>  
                                 </div>  
                                 <div class="col-sm-1">  

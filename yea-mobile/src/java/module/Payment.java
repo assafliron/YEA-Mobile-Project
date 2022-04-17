@@ -11,7 +11,7 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import static module.Order.getOrdersList;
+import static module.UserOrder.getOrdersList;
 
 @ManagedBean
 @RequestScoped

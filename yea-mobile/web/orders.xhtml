@@ -19,7 +19,7 @@
                     </center>  
                     <c:choose>
                         <c:when test="#{loginController.isManagerLoggedIn()}">
-                            <ui:param name="ordersList" value="#{order.getOrdersList()}" />  
+                            <ui:param name="ordersList" value="#{userOrder.getOrdersList()}" />  
                         </c:when>
                         <c:otherwise>
                             <ui:param name="ordersList" value="#{loggedUser.getOrdersOfUser()}" />  
@@ -49,7 +49,7 @@
                         </h:column>
                         <h:column>  
                             <f:facet name="header">Edit</f:facet>  
-                            <h:commandButton action = "#{order.edit(o.oid)}" value="Details" class="btn btn-primary">  
+                            <h:commandButton action = "#{userOrder.edit(o.oid)}" value="Details" class="btn btn-primary">  
                             </h:commandButton>  
                         </h:column>  
                         <c:if test="#{loginController.isManagerLoggedIn()}">

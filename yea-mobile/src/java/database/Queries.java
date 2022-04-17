@@ -1,7 +1,6 @@
 package database;
 
-
-import module.Order;
+import module.UserOrder;
 import module.SiteUser;
 
 import javax.persistence.EntityManager;
@@ -11,7 +10,6 @@ import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import javax.persistence.NamedQuery;
 import javax.persistence.Query;
-
 
 public class Queries {
 
@@ -28,7 +26,6 @@ public class Queries {
     EntityManagerFactory entityManagerFactory;
     EntityManager entityManager;
 
-
     private Queries() {
         db = new DatabaseConnection();
     }
@@ -39,7 +36,8 @@ public class Queries {
         entityManager.getTransaction().begin();
         // adding the user:
         entityManager.persist(user);
-        entityManager.getTransaction().commit();    }
+        entityManager.getTransaction().commit();
+    }
 
     public boolean isNewUser(SiteUser user) {
         return !entityManager.contains(user);
@@ -78,7 +76,7 @@ public class Queries {
         this.entityManager = entityManager;
     }
 
-    public void saveOrder(Order order) {
+    public void saveOrder(UserOrder order) {
         entityManager.getTransaction().begin();
         // adding the order:
         entityManager.persist(order);
