@@ -1,16 +1,14 @@
 package module;
 
+import Utils.ErrorReporter;
 import database.Queries;
 import java.io.Serializable;
 
 import java.util.*;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.OneToMany;
 
 import static module.Product.getProductsList;
 
@@ -25,99 +23,89 @@ public class UserOrder implements Serializable {
 
     // all the other fields of the order:
     private Date orderDate;
-    //private Date orderTime; // @TODO @elad - remove , orderDate include time
     private String destCity;
     private String destStreet;
     private int destHouseNumber;
     private String zip;
     private boolean provided;
-    private int totalPrice;
+    private double totalPrice;
 
     @OneToMany
-    List<Product> products;
+    Map<Product,Integer> products;
+
+    @OneToOne
+    private Payment payment;
+
+    @ManyToOne
+    private SiteUser user;
 
     public UserOrder() {
     }
 
-    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip) {
+    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip , Payment payment , Map<Product,Integer> products , SiteUser user) {
         this.orderDate = Calendar.getInstance().getTime();
         this.destCity = destCity;
         this.destStreet = destStreet;
         this.destHouseNumber = destHouseNumber;
         this.zip = zip;
         this.provided = false;
-        products = new ArrayList<>();
-        totalPrice = 0;
-    }
-
-    public void insertProducts(List<Product> products) {
-        this.products.addAll(products);
+        this.payment = payment;
+        this.user = user;
+        products = new HashMap<>();
+        this.products.putAll(products);
+        totalPrice = calcOrderTotalPrice();
         Queries.getInstance().saveOrder(this);
+
     }
 
+    private double calcOrderTotalPrice() {
+        double sum = 0;
+        for (Product product : products.keySet()) {
+            sum += product.getPrice()*products.get(product);
+        }
+        return sum;
+    }
     public static ArrayList<UserOrder> getOrdersList() {
-        //TODO: @Ishai - return a list of orders from the DB
-//        return new ArrayList<Order>() {{
-//           add(new UserOrder() {{
-//               setOid(1);
-//               setTotalPrice(199);
-//           }}); 
-//        }};
-        return null;
+             return Queries.getInstance().getOrderList();
     }
 
     public static ArrayList<UserOrder> getOrdersOfUser(SiteUser user) {
-        ArrayList<UserOrder> ordersOfUser = new ArrayList<>();
-        for (UserOrder order : getOrdersList()) {
-            if (user.equals(order.getUser())) {
-                ordersOfUser.add(order);
-            }
-        }
-        return ordersOfUser;
+               return Queries.getInstance().getOrdersOfUser(user);
     }
 
     public void save() {
-        //TODO: @Ishai - save order to DB
+        Queries.getInstance().saveOrder(this);
     }
 
-    public HashMap<Product, Integer> getIncludedProducts() {
-        //TODO: @Ishai - return <product, number of times included> for products included in this order
-        return new HashMap<Product, Integer>() {
-            {
-                put(new Product() {
-                    {
-                        setName("Iphone");
-                    }
-                }, 2);
-            }
-        };
+    public Map<Product, Integer> getIncludedProducts() {
+        return products;
     }
 
     public SiteUser getUser() {
-        //TODO: @Ishai - return the user that this order is for
-        return SiteUser.getUsersList().get(0);
+        return user;
     }
 
-    public static String edit(String oid) {
-        UserOrder order = null;
-        // TODO: @Ishai - return the order from the data base instead of from the static list
-        for (UserOrder o : getOrdersList()) {
-            if (oid.equals(o.oid)) {
-                order = o;
-                break;
-            }
-        }
+    public static String edit(int oid) {
 
+        UserOrder order = Queries.getInstance().getOrder(oid);
+        if (order == null) {
+            ErrorReporter.addError("order not exists!");
+            return "/order.xhtml?faces-redirect=false"; // TODO: @Assaf to check the return
+        }
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("order", order);
         return "/order.xhtml?faces-redirect=true";
     }
 
-    public static String delete(String pid) {
-        // TODO: @Ishai - delete the order from the database
+    public static String delete(Integer oid) {
+        UserOrder removedOrder = Queries.getInstance().deleteOrder(oid);
+        if (removedOrder == null) {
+            ErrorReporter.addError("order not exists!");
+            return "/order.xhtml?faces-redirect=false"; // TODO: @Assaf to check the retu
+        }
+        return "/index.xhtml?faces-redirect=true"; //TODO: @asssf to where you want to redirect when order deleted
 
-        return "/index.xhtml?faces-redirect=true";
-    }
+            }
 
     // Getters and Setters for the entity fields:
     public Integer getOid() {
@@ -176,12 +164,8 @@ public class UserOrder implements Serializable {
         this.provided = provided;
     }
 
-    public int getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-}
+  }

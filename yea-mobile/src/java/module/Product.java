@@ -3,8 +3,10 @@ package module;/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
  */
 
-import java.util.ArrayList;
-import java.util.Map;
+import Utils.ErrorReporter;
+import database.Queries;
+
+import java.util.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -44,52 +46,104 @@ public class Product {
     private double price;
     private int inStock;
 
+    private boolean isNewProduct(Product product){
+        return Queries.getInstance().isNewProduct(product);
+    }
+
+    private boolean isValidProduct() {
+        boolean flag = true;
+
+        if (this.name == null || this.name.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("Name can't be empty!");
+        }
+
+        if (this.brand == null || this.brand.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("Brand can't be empty!");
+        }
+        if (this.color == null || this.color.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("Color can't be empty!");
+        }
+        if (this.storageCapacity > 0) {
+            flag = false;
+            ErrorReporter.addError("Storage Capacity can't be negative or 0!");
+        }
+        if (this.weight > 0) {
+            flag = false;
+            ErrorReporter.addError("Weight can't be negative or 0! ");
+        }
+        if (this.operatingSystem == null || this.operatingSystem.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("Operating System can't be empty!");
+        }
+        if (this.price > 0) {
+            flag = false;
+            ErrorReporter.addError("price can't be negative or 0! ");
+        }
+        if (this.inStock > -1) {
+            flag = false;
+            ErrorReporter.addError("Stock quantity can't be negative");
+        }
+        return flag;
+    }
+
     public String save(boolean newProduct) {
-        // TODO: Validate all user fields & save to database
-        // TODO: If newProduct - validate that the product doesn't already exist
-        // TODO: If not newProduct - update  the existing product
-        return "/product.xhtml?faces-redirect=true";
+        if (!isValidProduct()) {
+            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , = false ?
+        }
+        if (newProduct && !isNewProduct(this)) {
+            ErrorReporter.addError("Product already exist");
+            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , false ?
+        }
+        Queries.getInstance().saveProduct(this);
+        return "/index.xhtml?faces-redirect=true";
     }
 
     public static ArrayList<Product> getProductsList() {
-        // TODO: return the prodcuts from the Data base instead of a static list
-        ArrayList<Product> productsList = new ArrayList<Product>() {{
-          Product product = new Product();
-          product.setPid(1234);
-          product.setBrand("Apple");
-          product.setName("Iphone 6s");
-          product.setColor("Black");
-          product.setStorageCapacity(16);
-          product.setWeight(10);
-          product.setPrice(1500);
-          product.setOperatingSystem("IOS");
-          product.setInStock(5);
-          add(product);
-        }};
+//        ArrayList<Product> productsList = new ArrayList<Product>() {{
+//          Product product = new Product();
+//          product.setPid(1234);
+//          product.setBrand("Apple");
+//          product.setName("Iphone 6s");
+//          product.setColor("Black");
+//          product.setStorageCapacity(16);
+//          product.setWeight(10);
+//          product.setPrice(1500);
+//          product.setOperatingSystem("IOS");
+//          product.setInStock(5);
+//          add(product);
+//        }};
+//       return productsList;
 
-        return productsList;
+        return Queries.getInstance().getProductsList();
     }
 
-    public static String edit(String pid) {
-        Product product = null;
-        // TODO: return the product from the data base instead of from the static list
-        for (Product p : getProductsList()) {
-            if (pid.equals(p.pid)) {
-                product = p;
-                break;
-            }
-        }
-          
+    public static String edit(int pid) {
+//        Product product = null;
+//        // TODO: return the product from the data base instead of from the static list
+//        for (Product p : getProductsList()) {
+//            if (pid.equals(p.pid)) {
+//                product = p;
+//                break;
+//            }
+// }
+        Product product = Queries.getInstance().getProduct(pid);
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("product", product);
         return "/product.xhtml?faces-redirect=true";
     }
     
-    public static String delete(String pid) {
-        // TODO: delete the product from the database
-        
+    public static String delete(int pid) {
+        Product removedProduct = Queries.getInstance().deleteProduct(pid);
+        if (removedProduct == null) {
+            ErrorReporter.addError("Product doesn't exist in the first place...");
+            return "/user.xhtml?faces-redirect=false"; // TODO: @Assaf check
+        }
         return "/index.xhtml?faces-redirect=true";
     }
+
     
     // Redirects to product.xhtml with empty fields, for a product new to be created
     public static String createNewProduct() {

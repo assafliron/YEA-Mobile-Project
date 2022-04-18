@@ -1,5 +1,6 @@
 package database;
 
+import module.Product;
 import module.UserOrder;
 import module.SiteUser;
 
@@ -39,15 +40,36 @@ public class Queries {
         entityManager.getTransaction().commit();
     }
 
+    public void saveProduct(Product product) {
+        entityManager.getTransaction().begin();
+        // adding the product:
+        entityManager.persist(product);
+        entityManager.getTransaction().commit();
+    }
     public boolean isNewUser(SiteUser user) {
         return !entityManager.contains(user);
     }
 
+    public boolean isNewProduct(Product product) {
+        return !entityManager.contains(product);
+    }
+
     public SiteUser getUser(String username) {
 
-        SiteUser result = entityManager.find(SiteUser.class, username);
+        return entityManager.find(SiteUser.class, username);
 
-        return result;
+    }
+
+
+    public UserOrder getOrder(int oid) {
+
+        return entityManager.find(UserOrder.class, oid);
+
+    }
+    public Product getProduct(int pid) {
+
+        return entityManager.find(Product.class, pid);
+
     }
 
     public SiteUser deleteUser(String username) {
@@ -60,6 +82,16 @@ public class Queries {
         return removedUser;
 
     }
+    public Product deleteProduct(int pid) {
+        Product removedProduct = entityManager.find(Product.class, pid);
+        if (removedProduct != null) {
+            entityManager.getTransaction().begin();
+            entityManager.remove(removedProduct);
+            entityManager.getTransaction().commit();
+        }
+        return removedProduct;
+
+    }
 
     public ArrayList<SiteUser> getUserList() {
         // get all users query
@@ -67,7 +99,26 @@ public class Queries {
 
         return new ArrayList<>(query.getResultList());
     }
+    public ArrayList<UserOrder> getOrderList() {
+        // get all order query
+        TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class); //TODO @Elad verify the query
 
+        return new ArrayList<>(query.getResultList());
+    }
+
+    public ArrayList<Product> getProductsList() {
+        // get all products query
+        TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Products u", Product.class);//TODO @Elad verify the query
+
+        return new ArrayList<>(query.getResultList());
+    }
+
+    public ArrayList<UserOrder> getOrdersOfUser(SiteUser user) {
+        // get list of orders of specific user query
+        TypedQuery<UserOrder> query = entityManager.createQuery("", UserOrder.class); //TODO @Elad add query
+
+        return new ArrayList<>(query.getResultList());
+    }
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
@@ -81,5 +132,15 @@ public class Queries {
         // adding the order:
         entityManager.persist(order);
         entityManager.getTransaction().commit();
+    }
+    public UserOrder deleteOrder (Integer oid) {
+        UserOrder removedOrder = entityManager.find(UserOrder.class, oid);
+        if (removedOrder != null) {
+            entityManager.getTransaction().begin();
+            entityManager.remove(removedOrder);
+            entityManager.getTransaction().commit();
+        }
+        return removedOrder;
+
     }
 }
