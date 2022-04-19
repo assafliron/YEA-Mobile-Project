@@ -2,6 +2,7 @@ package module;
 
 import Utils.ErrorReporter;
 import database.Queries;
+
 import java.io.Serializable;
 
 import java.util.*;
@@ -30,8 +31,8 @@ public class UserOrder implements Serializable {
     private boolean provided;
     private double totalPrice;
 
-    @OneToMany
-    Map<Product,Integer> products;
+    @OneToMany(targetEntity = Product.class)
+    Map<Product, Integer> products; // similar to "cart"
 
     @OneToOne
     private Payment payment;
@@ -42,7 +43,7 @@ public class UserOrder implements Serializable {
     public UserOrder() {
     }
 
-    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip , Payment payment , Map<Product,Integer> products , SiteUser user) {
+    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment, Map<Product, Integer> products, SiteUser user) {
         this.orderDate = Calendar.getInstance().getTime();
         this.destCity = destCity;
         this.destStreet = destStreet;
@@ -61,16 +62,17 @@ public class UserOrder implements Serializable {
     private double calcOrderTotalPrice() {
         double sum = 0;
         for (Product product : products.keySet()) {
-            sum += product.getPrice()*products.get(product);
+            sum += product.getPrice() * products.get(product);
         }
         return sum;
     }
+
     public static ArrayList<UserOrder> getOrdersList() {
-             return Queries.getInstance().getOrderList();
+        return Queries.getInstance().getOrderList();
     }
 
     public static ArrayList<UserOrder> getOrdersOfUser(SiteUser user) {
-               return new ArrayList<>(user.getOrdersOfUser());
+        return new ArrayList<>(user.getOrdersOfUser());
     }
 
     public void save() {
@@ -105,7 +107,7 @@ public class UserOrder implements Serializable {
         }
         return "/index.xhtml?faces-redirect=true"; //TODO: @asssf to where you want to redirect when order deleted
 
-            }
+    }
 
     // Getters and Setters for the entity fields:
     public Integer getOid() {
@@ -168,4 +170,4 @@ public class UserOrder implements Serializable {
         return totalPrice;
     }
 
-  }
+}

@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -45,6 +46,10 @@ public class Product {
     private String operatingSystem;
     private double price;
     private int inStock;
+
+    // relations:
+
+
 
     private boolean isNewProduct(Product product){
         return Queries.getInstance().isNewProduct(product);

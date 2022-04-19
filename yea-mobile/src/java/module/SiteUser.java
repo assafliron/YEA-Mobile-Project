@@ -53,8 +53,7 @@ public class SiteUser implements Serializable {
 
     // relations:
     @OneToMany(targetEntity = Product.class)
-    private Map<Product, Integer> cart;
-
+    private Map<Product, Integer> cart; // the Product and its quantity
 
     @OneToMany(targetEntity = UserOrder.class)
     private Set<UserOrder> orders;
@@ -115,8 +114,8 @@ public class SiteUser implements Serializable {
     }
 
 
-    public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip , Payment payment) {
-        UserOrder order = new UserOrder(destCity,destStreet,destHouseNumber,zip,payment,cart,this);
+    public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment) {
+        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, cart, this);
         orders.add(order);
         save(false);
         cart.clear();
@@ -125,7 +124,7 @@ public class SiteUser implements Serializable {
     public double getCartTotalPrice() {
         double sum = 0;
         for (Product product : cart.keySet()) {
-            sum += product.getPrice()*cart.get(product);
+            sum += product.getPrice() * cart.get(product);
         }
         return sum;
 
@@ -194,8 +193,7 @@ public class SiteUser implements Serializable {
         }
         if (this.birthDate == null ||
                 this.birthDate.before(new GregorianCalendar(1900, 1, 1).getTime()) ||
-                this.birthDate.after(Calendar.getInstance().getTime()))
-        {
+                this.birthDate.after(Calendar.getInstance().getTime())) {
             flag = false;
             ErrorReporter.addError("Birthdate need to be between 1900 and today");
         }
@@ -269,7 +267,7 @@ public class SiteUser implements Serializable {
 
 
     public Map<Product, Integer> getCart() {
-        return  cart;
+        return cart;
     }
 
 

@@ -31,7 +31,6 @@ public class Payment {
     @ManyToMany(mappedBy = "payments")
     private List<SiteUser> users;
 
-
     private boolean isNewPayment() {
         return Queries.getInstance().isNewPayment(this);
     }

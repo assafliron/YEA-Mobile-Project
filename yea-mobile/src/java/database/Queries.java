@@ -142,7 +142,7 @@ public class Queries {
     }
     public ArrayList<Product> getProductsList() {
         // get all products query
-        TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Products u", Product.class);//TODO @Elad verify the query
+        TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);//TODO @Elad verify the query
 
         return new ArrayList<>(query.getResultList());
     }
