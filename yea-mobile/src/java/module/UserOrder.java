@@ -70,7 +70,7 @@ public class UserOrder implements Serializable {
     }
 
     public static ArrayList<UserOrder> getOrdersOfUser(SiteUser user) {
-               return Queries.getInstance().getOrdersOfUser(user);
+               return new ArrayList<>(user.getOrdersOfUser());
     }
 
     public void save() {

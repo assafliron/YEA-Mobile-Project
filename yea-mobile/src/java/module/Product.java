@@ -70,7 +70,7 @@ public class Product {
             flag = false;
             ErrorReporter.addError("Storage Capacity can't be negative or 0!");
         }
-        if (this.weight > 0) {
+        if (this.weight <= 0) {
             flag = false;
             ErrorReporter.addError("Weight can't be negative or 0! ");
         }
@@ -78,11 +78,11 @@ public class Product {
             flag = false;
             ErrorReporter.addError("Operating System can't be empty!");
         }
-        if (this.price > 0) {
+        if (this.price <= 0) {
             flag = false;
             ErrorReporter.addError("price can't be negative or 0! ");
         }
-        if (this.inStock > -1) {
+        if (this.inStock < 0) {
             flag = false;
             ErrorReporter.addError("Stock quantity can't be negative");
         }

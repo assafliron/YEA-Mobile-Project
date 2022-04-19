@@ -1,5 +1,6 @@
 package database;
 
+import module.Payment;
 import module.Product;
 import module.UserOrder;
 import module.SiteUser;
@@ -27,11 +28,12 @@ public class Queries {
     EntityManagerFactory entityManagerFactory;
     EntityManager entityManager;
 
-    private Queries() {
-        db = new DatabaseConnection();
-    }
-
-    private DatabaseConnection db;
+// TODO:@Elad handle the connection to DB
+//    private Queries() {
+//        db = new DatabaseConnection();
+//    }
+//
+//    private DatabaseConnection db;
 
     public void saveUser(SiteUser user) {
         entityManager.getTransaction().begin();
@@ -46,12 +48,23 @@ public class Queries {
         entityManager.persist(product);
         entityManager.getTransaction().commit();
     }
+
+    public void savePayment(Payment payment) {
+        entityManager.getTransaction().begin();
+        // adding the user:
+        entityManager.persist(payment);
+        entityManager.getTransaction().commit();
+    }
     public boolean isNewUser(SiteUser user) {
         return !entityManager.contains(user);
     }
 
     public boolean isNewProduct(Product product) {
         return !entityManager.contains(product);
+    }
+
+    public boolean isNewPayment(Payment payment) {
+        return !entityManager.contains(payment);
     }
 
     public SiteUser getUser(String username) {
@@ -69,6 +82,12 @@ public class Queries {
     public Product getProduct(int pid) {
 
         return entityManager.find(Product.class, pid);
+
+    }
+
+    public Payment getPayment(Long creditNumber) {
+
+        return entityManager.find(Payment.class, creditNumber);
 
     }
 
@@ -92,6 +111,16 @@ public class Queries {
         return removedProduct;
 
     }
+    public Payment deletePayment(Long creditCard) {
+        Payment removedPayment = entityManager.find(Payment.class, creditCard);
+        if (removedPayment != null) {
+            entityManager.getTransaction().begin();
+            entityManager.remove(removedPayment);
+            entityManager.getTransaction().commit();
+        }
+        return removedPayment;
+
+    }
 
     public ArrayList<SiteUser> getUserList() {
         // get all users query
@@ -105,7 +134,12 @@ public class Queries {
 
         return new ArrayList<>(query.getResultList());
     }
+    public ArrayList<Payment> getPaymentList() {
+        // get all Payment query
+        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad verify the query
 
+        return new ArrayList<>(query.getResultList());
+    }
     public ArrayList<Product> getProductsList() {
         // get all products query
         TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Products u", Product.class);//TODO @Elad verify the query
@@ -113,12 +147,6 @@ public class Queries {
         return new ArrayList<>(query.getResultList());
     }
 
-    public ArrayList<UserOrder> getOrdersOfUser(SiteUser user) {
-        // get list of orders of specific user query
-        TypedQuery<UserOrder> query = entityManager.createQuery("", UserOrder.class); //TODO @Elad add query
-
-        return new ArrayList<>(query.getResultList());
-    }
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }

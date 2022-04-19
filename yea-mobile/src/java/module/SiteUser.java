@@ -60,7 +60,7 @@ public class SiteUser implements Serializable {
     private Set<UserOrder> orders;
 
     @ManyToMany
-    private List<Payment> payments;
+    private ArrayList<Payment> payments;
 
     // -------------------------------------------
     // constructor:
@@ -266,6 +266,8 @@ public class SiteUser implements Serializable {
         return "/user.xhtml?faces-redirect=true";
     }
 
+
+
     public Map<Product, Integer> getCart() {
         return  cart;
     }
@@ -359,11 +361,11 @@ public class SiteUser implements Serializable {
         this.orders = orders;
     }
 
-    public List<Payment> getPayments() {
+    public ArrayList<Payment> getPayments() {
         return payments;
     }
 
-    public void setPayments(List<Payment> payments) {
+    public void setPayments(ArrayList<Payment> payments) {
         this.payments = payments;
     }
 }
