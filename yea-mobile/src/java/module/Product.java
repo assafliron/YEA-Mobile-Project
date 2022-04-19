@@ -48,8 +48,7 @@ public class Product {
     private int inStock;
 
     // relations:
-
-
+    // TODO לאחר בדיקה בבסיס הנתונים לבדוק האם יש צורך לכתוב גם פה את הקשרים
 
     private boolean isNewProduct(Product product){
         return Queries.getInstance().isNewProduct(product);

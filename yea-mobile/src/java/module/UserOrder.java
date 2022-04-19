@@ -34,6 +34,7 @@ public class UserOrder implements Serializable {
     @OneToMany(targetEntity = Product.class)
     Map<Product, Integer> products; // similar to "cart"
 
+    // TODO @Yishi - להפוך לטיפוס של אחד לרבים מתשלומים להזמנות
     @OneToOne
     private Payment payment;
 
