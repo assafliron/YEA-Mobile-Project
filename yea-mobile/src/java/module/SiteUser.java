@@ -30,7 +30,7 @@ import javax.persistence.metamodel.EntityType;
 /**
  * @author assafliron
  */
-@Entity
+@Entity(name = "SiteUser")
 @Table(name = "SITEUSER")
 @ManagedBean
 @RequestScoped
@@ -52,8 +52,12 @@ public class SiteUser implements Serializable {
     private boolean active;
 
     // relations:
-    @OneToMany(targetEntity = Product.class)
-    private Map<Product, Integer> cart; // the Product and its quantity
+    @OneToMany(mappedBy = "SiteUser")
+    private Set<Cart> products = new HashSet<>();
+
+    // instead of:
+//    @OneToMany(targetEntity = Product.class)
+//    private Map<Product, Integer> cart; // the Product and its quantity
 
     @OneToMany(targetEntity = UserOrder.class)
     private Set<UserOrder> orders;
@@ -64,7 +68,7 @@ public class SiteUser implements Serializable {
     // -------------------------------------------
     // constructor:
     public SiteUser() {
-        cart = new HashMap<>();
+        products = new HashSet<>();
     }
 
     public SiteUser(String username, String firstName, String lastName, String email, String password, String phoneNumber, Date registrationDate, Date birthDate, boolean manager, boolean active) {
@@ -81,6 +85,7 @@ public class SiteUser implements Serializable {
     }
 
     // functions:
+    // TODO @Yishi - לתקן את העגלה
     public void addToCart(Product product) {
         Integer quantity = cart.get(product);
         if (quantity == null)
@@ -99,6 +104,7 @@ public class SiteUser implements Serializable {
         return 0;
     }
 
+    // TODO @Yishi - לתקן את העגלה
     public int decreaseProductFromCart(Product product) {
         Integer quantity = cart.get(product);
         if (quantity == null)
@@ -114,6 +120,7 @@ public class SiteUser implements Serializable {
     }
 
 
+    // TODO @Yishi - לתקן את העגלה
     public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment) {
         UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, cart, this);
         orders.add(order);
@@ -121,6 +128,7 @@ public class SiteUser implements Serializable {
         cart.clear();
     }
 
+    // TODO @Yishi - לתקן את העגלה
     public double getCartTotalPrice() {
         double sum = 0;
         for (Product product : cart.keySet()) {
@@ -265,11 +273,9 @@ public class SiteUser implements Serializable {
     }
 
 
-
-    public Map<Product, Integer> getCart() {
-        return cart;
+    public Set<Cart> getProducts() {
+        return products;
     }
-
 
     public String getUsername() {
         return username;

@@ -10,10 +10,7 @@ import java.util.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -48,6 +45,9 @@ public class Product {
     private int inStock;
 
     // relations:
+    @OneToMany(mappedBy = "SiteUser")
+    private Set<Cart> usersCarts = new HashSet<>();
+
     // TODO לאחר בדיקה בבסיס הנתונים לבדוק האם יש צורך לכתוב גם פה את הקשרים
 
     private boolean isNewProduct(Product product){

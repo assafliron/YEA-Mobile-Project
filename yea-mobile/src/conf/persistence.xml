@@ -6,6 +6,8 @@
     <class>module.Product</class>
     <class>module.SiteUser</class>
     <class>module.UserOrder</class>
+      <class>module.Cart</class>
+    <class>module.CartId</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
