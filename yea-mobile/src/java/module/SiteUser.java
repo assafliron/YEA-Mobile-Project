@@ -95,6 +95,7 @@ public class SiteUser implements Serializable {
 
     }
 
+    // TODO @Yishi - לתקן את העגלה
     public int removeFromCart(Product product) { // TODO @assafliron changed to boolean from void by yishai
         Integer quantity = cart.remove(product);
         if (quantity != null) {
