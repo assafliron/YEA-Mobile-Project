@@ -1,9 +1,6 @@
 package database;
 
-import module.Payment;
-import module.Product;
-import module.UserOrder;
-import module.SiteUser;
+import module.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -51,8 +48,19 @@ public class Queries {
 
     public void savePayment(Payment payment) {
         entityManager.getTransaction().begin();
-        // adding the user:
         entityManager.persist(payment);
+        entityManager.getTransaction().commit();
+    }
+
+    public void saveCart(Cart cart) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(cart);
+        entityManager.getTransaction().commit();
+    }
+
+    public void saveCartId(CartId cartId) {
+        entityManager.getTransaction().begin();
+        entityManager.persist(cartId);
         entityManager.getTransaction().commit();
     }
     public boolean isNewUser(SiteUser user) {
@@ -122,6 +130,16 @@ public class Queries {
 
     }
 
+    public Cart deleteCart (Cart cart) {
+
+            entityManager.getTransaction().begin();
+            entityManager.remove(cart);
+            entityManager.getTransaction().commit();
+
+        return cart;
+
+    }
+
     public ArrayList<SiteUser> getUserList() {
         // get all users query
         TypedQuery<SiteUser> query = entityManager.createQuery("SELECT u FROM SiteUser u", SiteUser.class);
@@ -146,7 +164,6 @@ public class Queries {
 
         return new ArrayList<>(query.getResultList());
     }
-
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }

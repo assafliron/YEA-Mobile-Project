@@ -31,10 +31,10 @@ public class UserOrder implements Serializable {
     private boolean provided;
     private double totalPrice;
 
-    @OneToMany(targetEntity = Product.class)
-    Map<Product, Integer> products; // similar to "cart"
+    @OneToMany(targetEntity = Product.class) //TODO: @ELAD should be manyTOone ? , products changed to SET<>
+    Set<Cart> products; // similar to "cart"
 
-    // TODO @Yishi - להפוך לטיפוס של אחד לרבים מתשלומים להזמנות
+    // TODO @ELAD - להפוך לטיפוס של אחד לרבים מתשלומים להזמנות
     @OneToOne
     private Payment payment;
 
@@ -44,7 +44,7 @@ public class UserOrder implements Serializable {
     public UserOrder() {
     }
 
-    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment, Map<Product, Integer> products, SiteUser user) {
+    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment, Set<Cart> products, SiteUser user) {
         this.orderDate = Calendar.getInstance().getTime();
         this.destCity = destCity;
         this.destStreet = destStreet;
@@ -53,8 +53,8 @@ public class UserOrder implements Serializable {
         this.provided = false;
         this.payment = payment;
         this.user = user;
-        products = new HashMap<>();
-        this.products.putAll(products);
+        products = new HashSet<>();
+        this.products.addAll(products);
         totalPrice = calcOrderTotalPrice();
         Queries.getInstance().saveOrder(this);
 
@@ -62,8 +62,8 @@ public class UserOrder implements Serializable {
 
     private double calcOrderTotalPrice() {
         double sum = 0;
-        for (Product product : products.keySet()) {
-            sum += product.getPrice() * products.get(product);
+        for (Cart cart : products) {
+            sum += cart.getProduct().getPrice()*cart.getId().getQuantity();
         }
         return sum;
     }
@@ -80,7 +80,7 @@ public class UserOrder implements Serializable {
         Queries.getInstance().saveOrder(this);
     }
 
-    public Map<Product, Integer> getIncludedProducts() {
+    public Set<Cart> getIncludedProducts() {
         return products;
     }
 

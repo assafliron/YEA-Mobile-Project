@@ -1,6 +1,5 @@
 package module;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,7 +10,7 @@ public class CartId implements Serializable {
     private Integer productId;
 
     // the additional columns:
-    private int quantity;
+    private int quantity = 1;
 
     public CartId() {
     }
@@ -46,6 +45,10 @@ public class CartId implements Serializable {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public int decrease (int quantity){this.quantity = Math.max(0,this.quantity-quantity); return quantity;}
+
+    public int increase (int quantity){this.quantity += quantity; return quantity;}
 
     // must override the hashCode and equals methods:
     @Override
