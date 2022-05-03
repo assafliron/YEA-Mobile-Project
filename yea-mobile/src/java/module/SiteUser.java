@@ -59,6 +59,7 @@ public class SiteUser implements Serializable {
 //    @OneToMany(targetEntity = Product.class)
 //    private Map<Product, Integer> cart; // the Product and its quantity
 
+    // TODO - good? - YES
     @OneToMany(targetEntity = UserOrder.class)
     private Set<UserOrder> orders;
 
@@ -123,7 +124,7 @@ public class SiteUser implements Serializable {
     public int decreaseProductFromCart(Product product) {
         Cart cart = findCart(product);
         if (cart == null) {
-           ErrorReporter.addError("Product not found in the cart");
+            ErrorReporter.addError("Product not found in the cart");
             return -1;
         }
 
@@ -143,7 +144,7 @@ public class SiteUser implements Serializable {
     public double getCartTotalPrice() {
         double sum = 0;
         for (Cart cart : products) {
-            sum += cart.getProduct().getPrice()*cart.getId().getQuantity();
+            sum += cart.getProduct().getPrice() * cart.getId().getQuantity();
         }
         return sum;
     }

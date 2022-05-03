@@ -38,6 +38,7 @@ public class UserOrder implements Serializable {
     @OneToOne
     private Payment payment;
 
+    // TODO - good? - (Not sure yet)
     @ManyToOne
     private SiteUser user;
 
