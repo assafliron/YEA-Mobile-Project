@@ -20,26 +20,39 @@ public class Main {
                 "elad@gmail.com", "passwordElad", "05412123123",
                 date, date, false, true);
 
+        // define payment:
         Payment payment1 = new Payment();
         payment1.setCreditCompany("Visa");
         payment1.setCreditNumber("1234-5678-1234-5678");
 
+        // define orders:
         UserOrder userOrder1 = new UserOrder("Har Adar", "Main Street", 12,
                 "AB123", payment1, null, null);
         UserOrder userOrder2 = new UserOrder("Har Adar", "Main Street", 23,
                 "AB124", payment1, null, null);
 
-        entityManager.persist(userOrder1);
-        entityManager.persist(userOrder2);
-
         Set<UserOrder> userOrderSet = new HashSet<>();
         userOrderSet.add(userOrder1);
         userOrderSet.add(userOrder2);
-
         siteUser1.setOrders(userOrderSet);
 
-        entityManager.persist(siteUser1);
+        Product product1 = new Product();
+        product1.setBrand("Apple");
+        product1.setColor("Black");
+        // define the cart:
+        Cart cart1 = new Cart();
+        cart1.setSiteUser(siteUser1);
+        cart1.setProduct(product1);
+        siteUser1.getProducts().add(cart1);
+        product1.getUsersCarts().add(cart1);
 
+        // persist everything
+        entityManager.persist(userOrder1);
+        entityManager.persist(userOrder2);
+
+        entityManager.persist(siteUser1);
+        entityManager.persist(product1);
+        entityManager.persist(cart1);
 
         entityManager.getTransaction().commit();
 

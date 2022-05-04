@@ -45,7 +45,7 @@ public class Product {
     private int inStock;
 
     // relations:
-    @OneToMany(mappedBy = "SiteUser")
+    @OneToMany(mappedBy = "Product")
     private Set<Cart> usersCarts = new HashSet<>();
 
     // TODO לאחר בדיקה בבסיס הנתונים לבדוק האם יש צורך לכתוב גם פה את הקשרים
@@ -226,6 +226,14 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<Cart> getUsersCarts() {
+        return usersCarts;
+    }
+
+    public void setUsersCarts(Set<Cart> usersCarts) {
+        this.usersCarts = usersCarts;
     }
     
     

@@ -64,6 +64,9 @@ public class SiteUser implements Serializable {
     private Set<UserOrder> orders;
 
     @ManyToMany
+    @JoinTable(name = "user_payments",
+            joinColumns = { @JoinColumn(name = "username") },
+            inverseJoinColumns = { @JoinColumn(name = "users") })
     private ArrayList<Payment> payments;
 
     // -------------------------------------------
@@ -94,7 +97,6 @@ public class SiteUser implements Serializable {
         return null;
 
     }
-
 
     // add 1 product to cart
     public int addToCart(Product product) {
@@ -283,11 +285,6 @@ public class SiteUser implements Serializable {
         return "/user.xhtml?faces-redirect=true";
     }
 
-
-    public Set<Cart> getProducts() {
-        return products;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -383,4 +380,13 @@ public class SiteUser implements Serializable {
     public void setPayments(ArrayList<Payment> payments) {
         this.payments = payments;
     }
+
+    public Set<Cart> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Cart> products) {
+        this.products = products;
+    }
+
 }
