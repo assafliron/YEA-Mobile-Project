@@ -52,12 +52,8 @@ public class SiteUser implements Serializable {
     private boolean active;
 
     // relations:
-    @OneToMany(mappedBy = "SiteUser") //TODO: @ELad to fix
+    @OneToMany(mappedBy = "SiteUser")
     private Set<Cart> products = new HashSet<>();
-
-    // instead of:
-//    @OneToMany(targetEntity = Product.class)
-//    private Map<Product, Integer> cart; // the Product and its quantity
 
     // TODO - good? - YES
     @OneToMany(targetEntity = UserOrder.class)
@@ -67,7 +63,7 @@ public class SiteUser implements Serializable {
     @JoinTable(name = "user_payments",
             joinColumns = { @JoinColumn(name = "username") },
             inverseJoinColumns = { @JoinColumn(name = "users") })
-    private ArrayList<Payment> payments;
+    private Set<Payment> payments = new HashSet<>();
 
     // -------------------------------------------
     // constructor:
@@ -373,11 +369,11 @@ public class SiteUser implements Serializable {
         this.orders = orders;
     }
 
-    public ArrayList<Payment> getPayments() {
+    public Set<Payment> getPayments() {
         return payments;
     }
 
-    public void setPayments(ArrayList<Payment> payments) {
+    public void setPayments(Set<Payment> payments) {
         this.payments = payments;
     }
 

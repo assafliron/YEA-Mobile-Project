@@ -63,6 +63,7 @@ public class Queries {
         entityManager.persist(cartId);
         entityManager.getTransaction().commit();
     }
+
     public boolean isNewUser(SiteUser user) {
         return !entityManager.contains(user);
     }
@@ -87,6 +88,7 @@ public class Queries {
         return entityManager.find(UserOrder.class, oid);
 
     }
+
     public Product getProduct(int pid) {
 
         return entityManager.find(Product.class, pid);
@@ -109,6 +111,7 @@ public class Queries {
         return removedUser;
 
     }
+
     public Product deleteProduct(int pid) {
         Product removedProduct = entityManager.find(Product.class, pid);
         if (removedProduct != null) {
@@ -119,6 +122,7 @@ public class Queries {
         return removedProduct;
 
     }
+
     public Payment deletePayment(Long creditCard) {
         Payment removedPayment = entityManager.find(Payment.class, creditCard);
         if (removedPayment != null) {
@@ -130,11 +134,11 @@ public class Queries {
 
     }
 
-    public Cart deleteCart (Cart cart) {
+    public Cart deleteCart(Cart cart) {
 
-            entityManager.getTransaction().begin();
-            entityManager.remove(cart);
-            entityManager.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        entityManager.remove(cart);
+        entityManager.getTransaction().commit();
 
         return cart;
 
@@ -146,24 +150,28 @@ public class Queries {
 
         return new ArrayList<>(query.getResultList());
     }
+
     public ArrayList<UserOrder> getOrderList() {
         // get all order query
         TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class); //TODO @Elad verify the query
 
         return new ArrayList<>(query.getResultList());
     }
+
     public ArrayList<Payment> getPaymentList() {
         // get all Payment query
         TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad verify the query
 
         return new ArrayList<>(query.getResultList());
     }
+
     public ArrayList<Product> getProductsList() {
         // get all products query
         TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);//TODO @Elad verify the query
 
         return new ArrayList<>(query.getResultList());
     }
+
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
     }
@@ -178,7 +186,8 @@ public class Queries {
         entityManager.persist(order);
         entityManager.getTransaction().commit();
     }
-    public UserOrder deleteOrder (Integer oid) {
+
+    public UserOrder deleteOrder(Integer oid) {
         UserOrder removedOrder = entityManager.find(UserOrder.class, oid);
         if (removedOrder != null) {
             entityManager.getTransaction().begin();

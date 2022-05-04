@@ -34,11 +34,18 @@ public class UserOrder implements Serializable {
     @OneToMany(targetEntity = Product.class) //TODO: @ELAD should be manyTOone ? , products changed to SET<>
     Set<Cart> products; // similar to "cart"
 
-    // TODO @ELAD - להפוך לטיפוס של אחד לרבים מתשלומים להזמנות
-    @OneToOne
-    private Payment payment;
+    @ManyToOne
+    private Payment paymentUsed;
 
-    // TODO - good? - (Not sure yet)
+    public Payment getPaymentUsed() {
+        return paymentUsed;
+    }
+
+    public void setPaymentUsed(Payment paymentUsed) {
+        this.paymentUsed = paymentUsed;
+    }
+
+    // TODO - good? - Yes
     @ManyToOne
     private SiteUser user;
 
@@ -52,7 +59,7 @@ public class UserOrder implements Serializable {
         this.destHouseNumber = destHouseNumber;
         this.zip = zip;
         this.provided = false;
-        this.payment = payment;
+        this.paymentUsed = payment;
         this.user = user;
         products = new HashSet<>();
         this.products.addAll(products);

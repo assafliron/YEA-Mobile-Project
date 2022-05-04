@@ -25,6 +25,15 @@ public class Main {
         payment1.setCreditCompany("Visa");
         payment1.setCreditNumber("1234-5678-1234-5678");
 
+        Payment payment2 = new Payment();
+        payment2.setCreditCompany("Visa");
+        payment2.setCreditNumber("6666-5678-1234-5678");
+
+        payment1.getUsers().add(siteUser1);
+        siteUser1.getPayments().add(payment1);
+        payment2.getUsers().add(siteUser1);
+        siteUser1.getPayments().add(payment2);
+
         // define orders:
         UserOrder userOrder1 = new UserOrder("Har Adar", "Main Street", 12,
                 "AB123", payment1, null, null);
@@ -35,6 +44,11 @@ public class Main {
         userOrderSet.add(userOrder1);
         userOrderSet.add(userOrder2);
         siteUser1.setOrders(userOrderSet);
+
+        userOrder1.setPaymentUsed(payment1);
+        userOrder2.setPaymentUsed(payment1);
+        payment1.getOrdersUsedIn().add(userOrder1);
+        payment1.getOrdersUsedIn().add(userOrder2);
 
         Product product1 = new Product();
         product1.setBrand("Apple");
@@ -49,6 +63,8 @@ public class Main {
         // persist everything
         entityManager.persist(userOrder1);
         entityManager.persist(userOrder2);
+        entityManager.persist(payment1);
+        entityManager.persist(payment2);
 
         entityManager.persist(siteUser1);
         entityManager.persist(product1);
