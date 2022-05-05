@@ -6,10 +6,7 @@ import database.Queries;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
@@ -28,8 +25,27 @@ public class Payment {
     private Integer cvvCode;
 
     // relations:
-    @ManyToMany(mappedBy = "payments")
-    private List<SiteUser> users;
+    @ManyToMany(mappedBy = "payments") // from SiteUser class
+    private Set<SiteUser> users = new HashSet<>();
+
+    @OneToMany(mappedBy = "paymentUsed") // in UserOrder
+    private Set<UserOrder> ordersUsedIn = new HashSet<>();
+
+    public Set<UserOrder> getOrdersUsedIn() {
+        return ordersUsedIn;
+    }
+
+    public void setOrdersUsedIn(Set<UserOrder> ordersUsedIn) {
+        this.ordersUsedIn = ordersUsedIn;
+    }
+
+    public Set<SiteUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<SiteUser> users) {
+        this.users = users;
+    }
 
     private boolean isNewPayment() {
         return Queries.getInstance().isNewPayment(this);
@@ -116,7 +132,7 @@ public class Payment {
         return Queries.getInstance().getPaymentList();
     }
     
-    public static ArrayList<Payment> getPaymentsOfUser(SiteUser user) {
+    public static Set<Payment> getPaymentsOfUser(SiteUser user) {
 //        ArrayList<Payment> paymentsOfUser = new ArrayList<>();
 //        for (Payment payment : getPaymentsList()) {
 //            if (payment.users.contains(user)) {

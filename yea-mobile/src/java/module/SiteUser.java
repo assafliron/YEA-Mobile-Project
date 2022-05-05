@@ -55,15 +55,15 @@ public class SiteUser implements Serializable {
     @OneToMany(mappedBy = "SiteUser")
     private Set<Cart> products = new HashSet<>();
 
-    // instead of:
-//    @OneToMany(targetEntity = Product.class)
-//    private Map<Product, Integer> cart; // the Product and its quantity
-
+    // TODO - good? - YES
     @OneToMany(targetEntity = UserOrder.class)
     private Set<UserOrder> orders;
 
     @ManyToMany
-    private ArrayList<Payment> payments;
+    @JoinTable(name = "user_payments",
+            joinColumns = { @JoinColumn(name = "username") },
+            inverseJoinColumns = { @JoinColumn(name = "users") })
+    private Set<Payment> payments = new HashSet<>();
 
     // -------------------------------------------
     // constructor:
@@ -85,58 +85,66 @@ public class SiteUser implements Serializable {
     }
 
     // functions:
-    // TODO @Yishi - לתקן את העגלה
-    public void addToCart(Product product) {
-        Integer quantity = cart.get(product);
-        if (quantity == null)
-            quantity = 0;
-        cart.put(product, quantity + 1);
-        save(false);
+
+    private Cart findCart(Product product) {
+        for (Cart current : products)
+            if (current.getProduct() == product)
+                return current;
+        return null;
 
     }
 
-    // TODO @Yishi - לתקן את העגלה
-    public int removeFromCart(Product product) { // TODO @assafliron changed to boolean from void by yishai
-        Integer quantity = cart.remove(product);
-        if (quantity != null) {
-            save(false);
-            return quantity;
+    // add 1 product to cart
+    public int addToCart(Product product) {
+        Cart cart = findCart(product);
+        if (cart == null) {
+            cart = new Cart(this, product);
+            products.add(cart);
+            return 1;
         }
-        return 0;
+
+        return cart.getId().increase(1);
     }
 
-    // TODO @Yishi - לתקן את העגלה
+    // remove the product form the cart
+    public void removeFromCart(Product product) { // TODO @assafliron changed to boolean from void by yishai
+        Cart cart = findCart(product);
+        if (cart == null) {
+            ErrorReporter.addError("Product doesn't exist");
+            return;
+        }
+        products.remove(cart);
+        Queries.getInstance().deleteCart(cart);
+
+    }
+
+    // decrease product quantity by 1
     public int decreaseProductFromCart(Product product) {
-        Integer quantity = cart.get(product);
-        if (quantity == null)
-            return 0;
-        if (quantity - 1 > 0)
-            cart.put(product, quantity - 1);
-        else {
-            cart.remove(product);
-            return 0;
+        Cart cart = findCart(product);
+        if (cart == null) {
+            ErrorReporter.addError("Product not found in the cart");
+            return -1;
         }
-        save(false);
-        return quantity - 1;
+
+        return cart.getId().decrease(1);
     }
 
 
-    // TODO @Yishi - לתקן את העגלה
     public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment) {
-        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, cart, this);
+        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
         orders.add(order);
+        products.clear();
         save(false);
-        cart.clear();
+
     }
 
-    // TODO @Yishi - לתקן את העגלה
+
     public double getCartTotalPrice() {
         double sum = 0;
-        for (Product product : cart.keySet()) {
-            sum += product.getPrice() * cart.get(product);
+        for (Cart cart : products) {
+            sum += cart.getProduct().getPrice() * cart.getId().getQuantity();
         }
         return sum;
-
     }
 
     private boolean isValidEmail() {
@@ -273,11 +281,6 @@ public class SiteUser implements Serializable {
         return "/user.xhtml?faces-redirect=true";
     }
 
-
-    public Set<Cart> getProducts() {
-        return products;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -366,11 +369,20 @@ public class SiteUser implements Serializable {
         this.orders = orders;
     }
 
-    public ArrayList<Payment> getPayments() {
+    public Set<Payment> getPayments() {
         return payments;
     }
 
-    public void setPayments(ArrayList<Payment> payments) {
+    public void setPayments(Set<Payment> payments) {
         this.payments = payments;
     }
+
+    public Set<Cart> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Cart> products) {
+        this.products = products;
+    }
+
 }
