@@ -19,7 +19,7 @@ public class SiteListener implements ServletContextListener {
         EntityManager em = emf.createEntityManager();
         e.getServletContext().setAttribute("em", em);
         Queries.getInstance().setEntityManager(em);
-//        createAdminUser();
+        createAdminUser();
     }
 
     // Release the EntityManagerFactory:

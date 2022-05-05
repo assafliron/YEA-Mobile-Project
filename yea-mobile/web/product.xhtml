@@ -32,6 +32,24 @@
                         </div>  
                     </div>
                     <div class="form-group row">  
+                        <h:outputLabel for="name" class="control-label col-sm-4 text-right">Name</h:outputLabel>
+                        <div class="col-sm-4">  
+                            <h:inputText id="name-id" value="#{product.name}" class="form-control"   
+                                         validatorMessage="name is required"
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <div class="form-group row">  
+                        <h:outputLabel for="color" class="control-label col-sm-4 text-right">Color</h:outputLabel>
+                        <div class="col-sm-4">  
+                            <h:inputText id="color-id" value="#{product.color}" class="form-control"   
+                                         validatorMessage="color is required"
+                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
+                            </h:inputText>  
+                        </div>  
+                    </div>
+                    <div class="form-group row">  
                         <h:outputLabel for="brand" class="control-label col-sm-4 text-right">Brand</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="brand-id" value="#{product.brand}" class="form-control"   
@@ -90,7 +108,7 @@
                                 <c:when test="#{loginController.isUserLoggedIn()}">
                                         <h:outputLabel for="addToCart" class="control-label col-sm-4 text-right">Currently in Cart</h:outputLabel>  
                                         <div class="col-sm-2 ">  
-                                            <h:inputText  id="inCart-id" value="TODO: num of items in user's cart" class="form-control"   
+                                            <h:inputText  id="inCart-id" value="#{loggedUser.getProductQuantity(product)}" class="form-control"   
                                                           disabled="true">  
                                             </h:inputText>  
                                         </div>

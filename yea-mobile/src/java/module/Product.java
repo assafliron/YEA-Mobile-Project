@@ -95,14 +95,14 @@ public class Product {
 
     public String save(boolean newProduct) {
         if (!isValidProduct()) {
-            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , = false ?
+            return "/product.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , = false ?
         }
         if (newProduct && !isNewProduct(this)) {
             ErrorReporter.addError("Product already exist");
-            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , false ?
+            return "/product.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , false ?
         }
         Queries.getInstance().saveProduct(this);
-        return "/index.xhtml?faces-redirect=true";
+        return "/product.xhtml?faces-redirect=true";
     }
 
     public static ArrayList<Product> getProductsList() {
@@ -143,9 +143,9 @@ public class Product {
         Product removedProduct = Queries.getInstance().deleteProduct(pid);
         if (removedProduct == null) {
             ErrorReporter.addError("Product doesn't exist in the first place...");
-            return "/user.xhtml?faces-redirect=false"; // TODO: @Assaf check
+            return "/products.xhtml?faces-redirect=false"; // TODO: @Assaf check
         }
-        return "/index.xhtml?faces-redirect=true";
+        return "/products.xhtml?faces-redirect=true";
     }
 
     

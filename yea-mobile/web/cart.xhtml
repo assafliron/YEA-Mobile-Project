@@ -17,7 +17,7 @@
                     <center>  
                         <h2><h:outputText value="My Cart"/></h2>  
                     </center>  
-                    <h:dataTable binding="#{table}" value="#{loggedUser.getCart()}" var="productEntry"   
+                    <h:dataTable binding="#{table}" value="#{loggedUser.getProducts()}" var="productEntry"   
                                  class="table table-striped table-hover table-bordered">
                         <h:column>  
                             <f:facet name="header"></f:facet>  
@@ -43,7 +43,7 @@
                         </h:column>
                         <h:column>  
                             <f:facet name="header">Decrease</f:facet>  
-                            <h:commandButton action = "#{loggedUser.removeFromCart(productEntry.key)}" value="Decrease" class="btn btn-danger">  
+                            <h:commandButton action = "#{loggedUser.decreaseProductFromCart(productEntry.key)}" value="Decrease" class="btn btn-danger">  
                             </h:commandButton>  
                         </h:column>
                     </h:dataTable>

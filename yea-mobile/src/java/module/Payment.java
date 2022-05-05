@@ -46,7 +46,7 @@ public class Payment {
     public void setUsers(Set<SiteUser> users) {
         this.users = users;
     }
-
+    
     private boolean isNewPayment() {
         return Queries.getInstance().isNewPayment(this);
     }
@@ -81,21 +81,29 @@ public class Payment {
             flag = false;
             ErrorReporter.addError("Invalid credit card number, need to be between 13 and 19 digits");
         }
-        if (!isValidCvvCode()) {
+        if (this.cvvCode == null) {
+            ErrorReporter.addError("CVV number can't be empty!");
+            flag = false;
+        } else if (!isValidCvvCode()) {
             flag = false;
             ErrorReporter.addError("Invalid CVV number, need to be between 3 and 4 digits");
         }
         return flag;
     }
 
-    public String save(boolean newPayment) {
+    public String save(SiteUser user) {
         if (!isValidPayment()) {
-            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , maybe = false ?
+            return "/payment.xhtml?faces-redirect=false"; 
         }
-        if (newPayment && !isNewPayment()) {
-            ErrorReporter.addError("Credit card already exist");
-            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , maybe = false ?
-        }
+//        if (newPayment && !isNewPayment()) {
+//            ErrorReporter.addError("Credit card already exist");
+//            return "/index.xhtml?faces-redirect=false"; 
+//        }
+
+        //TODO: @Yishay - instead of the if above, in case this is not a new payment
+        // - meaning this card number is already used - just update it instead of creating a new one
+        
+        //TODOL @Yishay - Add this payment to the received user (skip this step if it is already saved for this user)
         Queries.getInstance().savePayment(this);
         return "/index.xhtml?faces-redirect=true";
     }
@@ -104,7 +112,7 @@ public class Payment {
 //        Payment payment = null;
 //        for (Payment p : getPaymentsList()) {
 //            if (creditNumber.equals(p.creditNumber)) {
-//                payment = p;
+//                payment = p; 
 //                break;
 //            }
 //        }

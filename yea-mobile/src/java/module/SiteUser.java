@@ -94,20 +94,24 @@ public class SiteUser implements Serializable {
 
     }
 
-    // add 1 product to cart
-    public int addToCart(Product product) {
+    // increase product quantity by 1
+    public String addToCart(Product product) {
+        //TODO: @Yishai - this method needs to:
+        // 1. if this product already exists in this user's cart, then increase the quantity by 1
+        // 2. If this product doesn't exist in the cart, then add it with quantity = 1
         Cart cart = findCart(product);
         if (cart == null) {
             cart = new Cart(this, product);
             products.add(cart);
-            return 1;
+            return "/product.xhtml?faces-redirect=false";
         }
 
-        return cart.getId().increase(1);
+        return "/product.xhtml?faces-redirect=true";
     }
 
+    
     // remove the product form the cart
-    public void removeFromCart(Product product) { // TODO @assafliron changed to boolean from void by yishai
+    public void removeFromCart(Product product) {
         Cart cart = findCart(product);
         if (cart == null) {
             ErrorReporter.addError("Product doesn't exist");
@@ -115,7 +119,6 @@ public class SiteUser implements Serializable {
         }
         products.remove(cart);
         Queries.getInstance().deleteCart(cart);
-
     }
 
     // decrease product quantity by 1
@@ -128,6 +131,12 @@ public class SiteUser implements Serializable {
 
         return cart.getId().decrease(1);
     }
+    
+    // Get the product's quantity in this user's cart
+    public int getProductQuantity(Product product) {
+        //TODO: @Yishai - return the quantity of the received product in the user's cart
+        return 0;
+    }
 
 
     public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment) {
@@ -137,8 +146,13 @@ public class SiteUser implements Serializable {
         save(false);
 
     }
+    
+    public Map<Product, Integer> getCartItemsMap() {
+        // TODO: @Yishai - Needs to return a map of product -> amount in this user's cart
+        return new HashMap<Product, Integer>();
+    }
 
-
+    
     public double getCartTotalPrice() {
         double sum = 0;
         for (Cart cart : products) {
@@ -220,14 +234,14 @@ public class SiteUser implements Serializable {
 
     public String save(boolean newUser) {
         if (!isValidUser()) {
-            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , maybe = false ?
+            return "/user.xhtml?faces-redirect=false"; 
         }
         if (newUser && !isNewUser()) {
             ErrorReporter.addError("User already exist");
-            return "/index.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , maybe = false ?
+            return "/user.xhtml?faces-redirect=false"; 
         }
         Queries.getInstance().saveUser(this);
-        return "/index.xhtml?faces-redirect=true";
+        return "/user.xhtml?faces-redirect=true";
     }
 
     public static ArrayList<SiteUser> getUsersList() {
@@ -243,7 +257,7 @@ public class SiteUser implements Serializable {
         SiteUser user = Queries.getInstance().getUser(username);
         if (user == null) {
             ErrorReporter.addError("user not exists!");
-            return "/user.xhtml?faces-redirect=false"; // TODO: @Assaf check
+            return "/user.xhtml?faces-redirect=false";
         }
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("user", user);
@@ -254,9 +268,9 @@ public class SiteUser implements Serializable {
         SiteUser removedUser = Queries.getInstance().deleteUser(username);
         if (removedUser == null) {
             ErrorReporter.addError("User doesn't exist in the first place...");
-            return "/user.xhtml?faces-redirect=false"; // TODO: @Assaf check
+            return "/users.xhtml?faces-redirect=false";
         }
-        return "/index.xhtml?faces-redirect=true";
+        return "/users.xhtml?faces-redirect=true";
     }
 
     public static SiteUser find(String username, String password) {
