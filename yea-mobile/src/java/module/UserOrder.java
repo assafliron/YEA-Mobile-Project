@@ -101,7 +101,7 @@ public class UserOrder implements Serializable {
         UserOrder order = Queries.getInstance().getOrder(oid);
         if (order == null) {
             ErrorReporter.addError("order not exists!");
-            return "/order.xhtml?faces-redirect=false"; // TODO: @Assaf to check the return
+            return "/order.xhtml?faces-redirect=false";
         }
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("order", order);
@@ -112,10 +112,9 @@ public class UserOrder implements Serializable {
         UserOrder removedOrder = Queries.getInstance().deleteOrder(oid);
         if (removedOrder == null) {
             ErrorReporter.addError("order not exists!");
-            return "/order.xhtml?faces-redirect=false"; // TODO: @Assaf to check the retu
+            return "/order.xhtml?faces-redirect=false";
         }
-        return "/index.xhtml?faces-redirect=true"; //TODO: @asssf to where you want to redirect when order deleted
-
+        return "/orders.xhtml?faces-redirect=true";
     }
 
     // Getters and Setters for the entity fields:

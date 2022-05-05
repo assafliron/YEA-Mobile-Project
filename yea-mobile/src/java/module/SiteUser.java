@@ -274,17 +274,9 @@ public class SiteUser implements Serializable {
     }
 
     public static SiteUser find(String username, String password) {
-        // TODO: return the user in the DB with the received username and password
-        // TODO: if there is no such user - return null
-        for (SiteUser user : getUsersList()) {
-            if (user.username.equals(username) && user.password.equals(password)) {
+        SiteUser user = Queries.getInstance().getUser(username);
+        if(user != null && user.password.equals(password))
                 return user;
-            }
-        }
-//TODO: @Ishai please return this once this works:
-//        SiteUser user = Queries.getInstance().getUser(username);
-//        if(user != null && user.password.equals(password))
-//                return user;
         return null;
     }
 

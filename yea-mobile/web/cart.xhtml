@@ -17,7 +17,7 @@
                     <center>  
                         <h2><h:outputText value="My Cart"/></h2>  
                     </center>  
-                    <h:dataTable binding="#{table}" value="#{loggedUser.getProducts()}" var="productEntry"   
+                    <h:dataTable binding="#{table}" value="#{loggedUser.getCartItemsMap()}" var="productEntry"   
                                  class="table table-striped table-hover table-bordered">
                         <h:column>  
                             <f:facet name="header"></f:facet>  

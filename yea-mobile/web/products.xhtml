@@ -52,8 +52,12 @@
                         </h:column>  
                         </c:if>
                     </h:dataTable>  
+                    <c:if test="#{loginController.isManagerLoggedIn()}">
+
                     <center><h:commandButton action = "#{product.createNewProduct()}"   
                                              value="Create New Product" class="btn btn-success"></h:commandButton></center>
+
+                    </c:if>
                 </h:form>
             </ui:define>
         </ui:composition>  

@@ -126,7 +126,7 @@ public class Payment {
         Payment removedPayment = Queries.getInstance().deletePayment(creditNumber);
         if (removedPayment == null) {
             ErrorReporter.addError("Payment doesn't exist in the first place...");
-            return "/user.xhtml?faces-redirect=false"; // TODO: @Assaf check
+            return "/user.xhtml?faces-redirect=false";
         }
         return "/index.xhtml?faces-redirect=true";
     }

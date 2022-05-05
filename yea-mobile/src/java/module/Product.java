@@ -95,11 +95,11 @@ public class Product {
 
     public String save(boolean newProduct) {
         if (!isValidProduct()) {
-            return "/product.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , = false ?
+            return "/product.xhtml?faces-redirect=false";
         }
         if (newProduct && !isNewProduct(this)) {
             ErrorReporter.addError("Product already exist");
-            return "/product.xhtml?faces-redirect=false"; //TODO: @assafLiron Check , false ?
+            return "/product.xhtml?faces-redirect=false";
         }
         Queries.getInstance().saveProduct(this);
         return "/product.xhtml?faces-redirect=true";
@@ -140,10 +140,12 @@ public class Product {
     }
     
     public static String delete(int pid) {
+        //TODO: @Yishay - if the product is connected to cart, then a bad error is shown
+        // Instead - we need to show a pretty "can't delete because user user has this product in his cart" error
         Product removedProduct = Queries.getInstance().deleteProduct(pid);
         if (removedProduct == null) {
             ErrorReporter.addError("Product doesn't exist in the first place...");
-            return "/products.xhtml?faces-redirect=false"; // TODO: @Assaf check
+            return "/products.xhtml?faces-redirect=false";
         }
         return "/products.xhtml?faces-redirect=true";
     }
