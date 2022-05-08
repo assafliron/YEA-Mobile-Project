@@ -95,15 +95,7 @@ public class Payment {
         if (!isValidPayment()) {
             return "/payment.xhtml?faces-redirect=false"; 
         }
-//        if (newPayment && !isNewPayment()) {
-//            ErrorReporter.addError("Credit card already exist");
-//            return "/index.xhtml?faces-redirect=false"; 
-//        }
-
-        //TODO: @Yishay - instead of the if above, in case this is not a new payment
-        // - meaning this card number is already used - just update it instead of creating a new one
-        
-        //TODOL @Yishay - Add this payment to the received user (skip this step if it is already saved for this user)
+        users.add(user);
         Queries.getInstance().savePayment(this);
         return "/index.xhtml?faces-redirect=true";
     }

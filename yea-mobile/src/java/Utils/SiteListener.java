@@ -16,16 +16,16 @@ public class SiteListener implements ServletContextListener {
         e.getServletContext().setAttribute("emf", emf);
         Queries.getInstance().setEntityManagerFactory(emf);
 
-        EntityManager em = emf.createEntityManager();
+       /* EntityManager em = emf.createEntityManager();
         e.getServletContext().setAttribute("em", em);
-        Queries.getInstance().setEntityManager(em);
+        Queries.getInstance().setEntityManager(em); TODO: ASSAF , do you need that ? */
         createAdminUser();
     }
 
     // Release the EntityManagerFactory:
     public void contextDestroyed(ServletContextEvent e) {
-        EntityManager em
-                = (EntityManager) e.getServletContext().getAttribute("em");
+       /* EntityManager em
+                = (EntityManager) e.getServletContext().getAttribute("em"); TODO: ASSAF , do you need that ? */
         EntityManagerFactory emf
                 = (EntityManagerFactory) e.getServletContext().getAttribute("emf");
         emf.close();

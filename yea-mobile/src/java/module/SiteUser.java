@@ -95,17 +95,16 @@ public class SiteUser implements Serializable {
     }
 
     // increase product quantity by 1
+    // 1. if this product already exists in this user's cart, then increase the quantity by 1
+    // 2. If this product doesn't exist in the cart, then add it with quantity = 1
     public String addToCart(Product product) {
-        //TODO: @Yishai - this method needs to:
-        // 1. if this product already exists in this user's cart, then increase the quantity by 1
-        // 2. If this product doesn't exist in the cart, then add it with quantity = 1
         Cart cart = findCart(product);
         if (cart == null) {
             cart = new Cart(this, product);
             products.add(cart);
             return "/product.xhtml?faces-redirect=false";
         }
-
+        cart.getId().increase(1);
         return "/product.xhtml?faces-redirect=true";
     }
 
@@ -134,8 +133,11 @@ public class SiteUser implements Serializable {
     
     // Get the product's quantity in this user's cart
     public int getProductQuantity(Product product) {
-        //TODO: @Yishai - return the quantity of the received product in the user's cart
-        return 0;
+        Cart cart = findCart(product);
+        if (cart == null)
+            return 0;
+
+        return cart.getId().getQuantity();
     }
 
 
@@ -146,10 +148,13 @@ public class SiteUser implements Serializable {
         save(false);
 
     }
-    
+    //return a map of product -> amount in this user's cart
     public Map<Product, Integer> getCartItemsMap() {
-        // TODO: @Yishai - Needs to return a map of product -> amount in this user's cart
-        return new HashMap<Product, Integer>();
+        Map<Product, Integer> map = new HashMap<Product, Integer>();
+        for (Cart cart:products){
+            map.put(cart.getProduct(),cart.getId().getQuantity());
+                    }
+        return map;
     }
 
     
