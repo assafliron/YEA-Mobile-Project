@@ -1,5 +1,7 @@
 package module;
 
+import database.Queries;
+
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
@@ -48,7 +50,9 @@ public class CartId implements Serializable {
 
     public int decrease (int quantity){this.quantity = Math.max(0,this.quantity-quantity); return quantity;}
 
-    public int increase (int quantity){this.quantity += quantity; return quantity;}
+    public int increase (int quantity){
+        this.quantity += quantity;
+        return quantity;}
 
     // must override the hashCode and equals methods:
     @Override
