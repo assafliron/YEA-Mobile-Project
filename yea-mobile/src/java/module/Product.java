@@ -70,7 +70,7 @@ public class Product {
             flag = false;
             ErrorReporter.addError("Color can't be empty!");
         }
-        if (this.storageCapacity > 0) {
+        if (this.storageCapacity <= 0) {
             flag = false;
             ErrorReporter.addError("Storage Capacity can't be negative or 0!");
         }
