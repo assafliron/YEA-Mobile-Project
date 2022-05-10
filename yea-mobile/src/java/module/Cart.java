@@ -1,5 +1,7 @@
 package module;
 
+import database.Queries;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,6 +32,7 @@ public class Cart {
 
     public void setId(CartId id) {
         this.id = id;
+        Queries.getInstance().saveCart(this);
     }
 
     public SiteUser getSiteUser() {
@@ -38,6 +41,7 @@ public class Cart {
 
     public void setSiteUser(SiteUser siteUser) {
         this.siteUser = siteUser;
+        Queries.getInstance().saveCart(this);
     }
 
     public Product getProduct() {
@@ -46,5 +50,8 @@ public class Cart {
 
     public void setProduct(Product product) {
         this.product = product;
+        Queries.getInstance().saveCart(this);
     }
+
+
 }

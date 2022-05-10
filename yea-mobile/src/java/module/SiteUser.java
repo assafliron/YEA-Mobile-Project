@@ -102,9 +102,13 @@ public class SiteUser implements Serializable {
         if (cart == null) {
             cart = new Cart(this, product);
             products.add(cart);
+            save(false);
             return "/product.xhtml?faces-redirect=false";
         }
-        cart.getId().increase(1);
+        CartId id = cart.getId();
+        id.increase(1);
+        cart.setId(id);
+        save(false);
         return "/product.xhtml?faces-redirect=true";
     }
 
@@ -118,17 +122,25 @@ public class SiteUser implements Serializable {
         }
         products.remove(cart);
         Queries.getInstance().deleteCart(cart);
+        save(false);
     }
 
     // decrease product quantity by 1
-    public int decreaseProductFromCart(Product product) {
-        Cart cart = findCart(product);
-        if (cart == null) {
-            ErrorReporter.addError("Product not found in the cart");
-            return -1;
-        }
+    public String decreaseProductFromCart(Product product) {
+            Cart cart = findCart(product);
+            if (cart == null) {
+                ErrorReporter.addError("Product not found");
+                return "/product.xhtml?faces-redirect=false";
+            }
 
-        return cart.getId().decrease(1);
+            CartId id = cart.getId();
+            id.decrease(1);
+            if(id.getQuantity() == 0)
+                Queries.getInstance().deleteCart(cart);
+            else
+                cart.setId(id);
+            save(false);
+            return "/product.xhtml?faces-redirect=true";
     }
     
     // Get the product's quantity in this user's cart
@@ -151,6 +163,8 @@ public class SiteUser implements Serializable {
     //return a map of product -> amount in this user's cart
     public Map<Product, Integer> getCartItemsMap() {
         Map<Product, Integer> map = new HashMap<Product, Integer>();
+        if (products ==null)
+            return map;
         for (Cart cart:products){
             map.put(cart.getProduct(),cart.getId().getQuantity());
                     }
