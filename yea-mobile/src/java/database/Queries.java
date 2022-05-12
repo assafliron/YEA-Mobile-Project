@@ -1,5 +1,6 @@
 package database;
 
+import Utils.ErrorReporter;
 import module.*;
 
 import javax.persistence.EntityManager;
@@ -18,54 +19,99 @@ public class Queries {
         return singleton;
     }
 
-    private Queries (){};
+    private Queries() {
+    }
+
+    ;
 
     // Opened and closed automatically in SiteListener on server start & end, respectively
     EntityManagerFactory entityManagerFactory;
 
     public void saveUser(SiteUser user) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         // adding the user:
-        entityManager.persist(user);
+        SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
+        if (findUser == null)
+            entityManager.persist(user);
+
+        else
+            findUser.updateUser(user);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     public void saveProduct(Product product) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        // adding the product:
-        entityManager.persist(product);
+        Product findProduct = entityManager.find(Product.class, product.getPid());
+        if (findProduct == null)
+            entityManager.persist(product);
+
+        else
+            findProduct.updateProduct(product);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     public void savePayment(Payment payment) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(payment);
+        Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
+        if (findPayment == null)
+            entityManager.persist(payment);
+
+        else
+            findPayment.updatePayment(payment);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     public void saveCart(Cart cart) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(cart);
+        Cart findCart = entityManager.find(Cart.class, cart.getId());
+        if (findCart == null)
+            entityManager.persist(cart);
+
+        else
+            findCart.updateCart(cart);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
-    public void saveCartId(CartId cartId) {
+    public void saveOrder(UserOrder order) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(cartId);
+        UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
+        if (findOrder == null)
+            entityManager.persist(order);
+
+        else
+            findOrder.updateOrder(order);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     public boolean isNewUser(SiteUser user) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         boolean rs = !entityManager.contains(user);
         entityManager.close();
@@ -74,6 +120,9 @@ public class Queries {
     }
 
     public boolean isNewProduct(Product product) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         boolean rs = !entityManager.contains(product);
         entityManager.close();
@@ -81,6 +130,9 @@ public class Queries {
     }
 
     public boolean isNewPayment(Payment payment) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         boolean rs = !entityManager.contains(payment);
         entityManager.close();
@@ -88,6 +140,9 @@ public class Queries {
     }
 
     public SiteUser getUser(String username) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         SiteUser rs = entityManager.find(SiteUser.class, username);
         entityManager.close();
@@ -96,6 +151,9 @@ public class Queries {
 
 
     public UserOrder getOrder(int oid) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         UserOrder rs = entityManager.find(UserOrder.class, oid);
         entityManager.close();
@@ -103,6 +161,10 @@ public class Queries {
     }
 
     public Product getProduct(int pid) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Product rs = entityManager.find(Product.class, pid);
         entityManager.close();
@@ -110,13 +172,21 @@ public class Queries {
     }
 
     public Payment getPayment(Long creditNumber) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Payment rs =  entityManager.find(Payment.class, creditNumber);
+        Payment rs = entityManager.find(Payment.class, creditNumber);
         entityManager.close();
         return rs;
     }
 
     public SiteUser deleteUser(String username) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         SiteUser removedUser = entityManager.find(SiteUser.class, username);
         if (removedUser != null) {
@@ -130,6 +200,10 @@ public class Queries {
     }
 
     public Product deleteProduct(int pid) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Product removedProduct = entityManager.find(Product.class, pid);
         if (removedProduct != null) {
@@ -143,6 +217,10 @@ public class Queries {
     }
 
     public Payment deletePayment(Long creditCard) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         Payment removedPayment = entityManager.find(Payment.class, creditCard);
         if (removedPayment != null) {
@@ -156,6 +234,10 @@ public class Queries {
     }
 
     public Cart deleteCart(Cart cart) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.remove(cart);
@@ -166,36 +248,66 @@ public class Queries {
     }
 
     public ArrayList<SiteUser> getUserList() {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all users query
         TypedQuery<SiteUser> query = entityManager.createQuery("SELECT u FROM SiteUser u", SiteUser.class);
 
-        ArrayList<SiteUser> rs =  new ArrayList<>(query.getResultList());
+        ArrayList<SiteUser> rs = new ArrayList<>(query.getResultList());
         entityManager.close();
         return rs;
     }
 
     public ArrayList<UserOrder> getOrderList() {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all order query
         TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class); //TODO @Elad verify the query
 
-        ArrayList<UserOrder> rs = new  ArrayList<>(query.getResultList());
+        ArrayList<UserOrder> rs = new ArrayList<>(query.getResultList());
         entityManager.close();
         return rs;
     }
 
     public ArrayList<Payment> getPaymentList() {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all Payment query
         TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad verify the query
 
-        ArrayList<Payment> rs =  new ArrayList<>(query.getResultList());
+        ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
+        entityManager.close();
+        return rs;
+    }
+
+    public ArrayList<Payment> getPaymentOfUser(SiteUser user) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        // get all Payment query
+        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad to verify the query  where  "user"!
+
+        ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
         entityManager.close();
         return rs;
     }
 
     public ArrayList<Product> getProductsList() {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all products query
         TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);//TODO @Elad verify the query
@@ -209,17 +321,11 @@ public class Queries {
         this.entityManagerFactory = entityManagerFactory;
     }
 
-
-    public void saveOrder(UserOrder order) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        // adding the order:
-        entityManager.persist(order);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-    }
-
     public UserOrder deleteOrder(Integer oid) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+            return null;
+        }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         UserOrder removedOrder = entityManager.find(UserOrder.class, oid);
         if (removedOrder != null) {

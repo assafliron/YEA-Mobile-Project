@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+
 import static module.UserOrder.getOrdersList;
 
 @ManagedBean
@@ -46,7 +47,7 @@ public class Payment {
     public void setUsers(Set<SiteUser> users) {
         this.users = users;
     }
-    
+
     private boolean isNewPayment() {
         return Queries.getInstance().isNewPayment(this);
     }
@@ -63,7 +64,7 @@ public class Payment {
         return matcher.find();
     }
 
-      private boolean isValidPayment() {
+    private boolean isValidPayment() {
         boolean flag = true;
 
         if (this.creditCompany == null || this.creditCompany.isEmpty()) {
@@ -72,8 +73,7 @@ public class Payment {
         }
 
         if (this.validUntil == null ||
-                this.validUntil.before(Calendar.getInstance().getTime()))
-        {
+                this.validUntil.before(Calendar.getInstance().getTime())) {
             flag = false;
             ErrorReporter.addError("Card valid date is invalid");
         }
@@ -93,13 +93,22 @@ public class Payment {
 
     public String save(SiteUser user) {
         if (!isValidPayment()) {
-            return "/payment.xhtml?faces-redirect=false"; 
+            return "/payment.xhtml?faces-redirect=false";
         }
         users.add(user);
         Queries.getInstance().savePayment(this);
         return "/index.xhtml?faces-redirect=true";
     }
-    
+
+    public void updatePayment(Payment payment) {
+        this.creditNumber = payment.creditNumber;
+        this.creditCompany = payment.creditCompany;
+        this.cvvCode = payment.cvvCode;
+        this.validUntil = payment.validUntil;
+        this.ordersUsedIn = payment.ordersUsedIn;
+        this.users = payment.users;
+    }
+
     public static String edit(Long creditNumber) {
 //        Payment payment = null;
 //        for (Payment p : getPaymentsList()) {
@@ -122,7 +131,7 @@ public class Payment {
         }
         return "/index.xhtml?faces-redirect=true";
     }
-    
+
     public static ArrayList<Payment> getPaymentsList() {
 //        return new ArrayList<Payment>() {{
 //           add(new Payment() {{
@@ -131,7 +140,7 @@ public class Payment {
 //        }};
         return Queries.getInstance().getPaymentList();
     }
-    
+
     public static Set<Payment> getPaymentsOfUser(SiteUser user) {
 //        ArrayList<Payment> paymentsOfUser = new ArrayList<>();
 //        for (Payment payment : getPaymentsList()) {
@@ -144,7 +153,7 @@ public class Payment {
             return user.getPayments();
         }
     }
-    
+
     // Getters and Setters:
     public String getCreditNumber() {
         return creditNumber;

@@ -105,6 +105,19 @@ public class Product {
         return "/product.xhtml?faces-redirect=true";
     }
 
+    public void updateProduct (Product product){
+        this.name = product.name;
+        this.brand = product.brand;
+        this.color =product.color;
+        this.inStock = product.inStock;
+        this.operatingSystem = product.operatingSystem;
+        this.pid = product.pid;
+        this.price =product.price;
+        this.storageCapacity = product.storageCapacity;
+        this.usersCarts=product.usersCarts;
+        this.weight=product.weight;
+
+    }
     public static ArrayList<Product> getProductsList() {
 //        ArrayList<Product> productsList = new ArrayList<Product>() {{
 //          Product product = new Product();
