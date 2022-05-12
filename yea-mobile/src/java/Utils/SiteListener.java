@@ -15,17 +15,11 @@ public class SiteListener implements ServletContextListener {
                 = Persistence.createEntityManagerFactory("yea-mobilePU");
         e.getServletContext().setAttribute("emf", emf);
         Queries.getInstance().setEntityManagerFactory(emf);
-
-       /* EntityManager em = emf.createEntityManager();
-        e.getServletContext().setAttribute("em", em);
-        Queries.getInstance().setEntityManager(em); TODO: ASSAF , do you need that ? */
         createAdminUser();
     }
 
     // Release the EntityManagerFactory:
     public void contextDestroyed(ServletContextEvent e) {
-       /* EntityManager em
-                = (EntityManager) e.getServletContext().getAttribute("em"); TODO: ASSAF , do you need that ? */
         EntityManagerFactory emf
                 = (EntityManagerFactory) e.getServletContext().getAttribute("emf");
         emf.close();
@@ -35,6 +29,10 @@ public class SiteListener implements ServletContextListener {
         SiteUser admin = new SiteUser();
         admin.setUsername("admin");
         admin.setPassword("aaaa");
+        admin.setFirstName("admin");
+        admin.setLastName("user");
+        admin.setEmail("admin@gmail.com");
+        admin.setPhoneNumber("0546664440");
         admin.setActive(true);
         admin.setManager(true);
         Queries.getInstance().saveUser(admin);

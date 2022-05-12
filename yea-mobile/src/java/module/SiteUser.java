@@ -110,7 +110,7 @@ public class SiteUser implements Serializable {
         id.increase(1);
         cart.setId(id);
         save(false);
-        return "/product.xhtml?faces-redirect=true";
+        return "/cart.xhtml?faces-redirect=true";
     }
 
     
@@ -141,7 +141,7 @@ public class SiteUser implements Serializable {
             else
                 cart.setId(id);
             save(false);
-            return "/product.xhtml?faces-redirect=true";
+            return "/cart.xhtml?faces-redirect=true";
     }
     
     // Get the product's quantity in this user's cart
