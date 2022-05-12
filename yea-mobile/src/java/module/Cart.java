@@ -53,5 +53,10 @@ public class Cart {
         Queries.getInstance().saveCart(this);
     }
 
+    public void updateCart(Cart cart) {
+        this.product.updateProduct(cart.product);
+        this.id.updateCartId(cart.id);
+        this.siteUser.updateUser(cart.siteUser);
 
+    }
 }

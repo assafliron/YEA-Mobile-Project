@@ -71,7 +71,7 @@ public class UserOrder implements Serializable {
     private double calcOrderTotalPrice() {
         double sum = 0;
         for (Cart cart : products) {
-            sum += cart.getProduct().getPrice()*cart.getId().getQuantity();
+            sum += cart.getProduct().getPrice() * cart.getId().getQuantity();
         }
         return sum;
     }
@@ -106,6 +106,23 @@ public class UserOrder implements Serializable {
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("order", order);
         return "/order.xhtml?faces-redirect=true";
+    }
+
+    public void updateOrder(UserOrder order) {
+        this.products = order.products;
+        this.user = order.user;
+        this.destCity = order.destCity;
+        this.destHouseNumber = order.destHouseNumber;
+        this.destStreet = order.destStreet;
+        this.oid = order.oid;
+        this.orderDate = order.orderDate;
+        this.paymentUsed = order.paymentUsed;
+        this.provided = order.provided;
+        this.products = order.products;
+        this.destCity = order.destCity;
+        this.totalPrice = order.totalPrice;
+        this.zip = order.zip;
+
     }
 
     public static String delete(Integer oid) {

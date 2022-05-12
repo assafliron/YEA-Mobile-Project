@@ -102,6 +102,7 @@ public class SiteUser implements Serializable {
         if (cart == null) {
             cart = new Cart(this, product);
             products.add(cart);
+            Queries.getInstance().saveCart(cart);
             save(false);
             return "/product.xhtml?faces-redirect=false";
         }
@@ -154,6 +155,16 @@ public class SiteUser implements Serializable {
 
 
     public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment) {
+        for (Cart current : products){
+            if(current.getProduct().getInStock() < current.getId().getQuantity()) {
+                ErrorReporter.addError(current.getProduct().getName()+ " quantity is not available");
+                return;
+            }
+        }
+        for (Cart current : products){
+            current.getProduct().setInStock(current.getProduct().getInStock()-current.getId().getQuantity());
+            current.getProduct().save(false);
+        }
         UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
         orders.add(order);
         products.clear();
@@ -261,6 +272,22 @@ public class SiteUser implements Serializable {
         }
         Queries.getInstance().saveUser(this);
         return "/user.xhtml?faces-redirect=true";
+    }
+
+    public void updateUser (SiteUser user){
+        this.active = user.active;
+        this.products = user.products;
+        this.password = user.password;
+        this.lastName =user.lastName;
+        this.username = user.username;
+        this.birthDate =user.birthDate;
+        this.email =user.email;
+        this.firstName =user.firstName;
+        this.manager =user.manager;
+        this.orders =user.orders;
+        this.payments =user.payments;
+        this.phoneNumber =user.phoneNumber;
+        this.registrationDate =user.registrationDate;
     }
 
     public static ArrayList<SiteUser> getUsersList() {
@@ -395,8 +422,14 @@ public class SiteUser implements Serializable {
     }
 
     public Set<Payment> getPayments() {
+
+       /* Set<Payment> rs = new HashSet<>(Queries.getInstance().getPaymentOfUser(this));
+        return rs;*/ //TODO: yishai
+
         return payments;
     }
+
+
 
     public void setPayments(Set<Payment> payments) {
         this.payments = payments;

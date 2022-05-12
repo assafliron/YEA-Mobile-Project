@@ -23,6 +23,13 @@ public class CartId implements Serializable {
         this.productId = productId;
     }
 
+    public void updateCartId(CartId cartId) {
+        this.quantity = cartId.quantity;
+        this.productId = cartId.productId;
+        this.username = cartId.username;
+
+    }
+
     // getters and setters
     public String getUsername() {
         return username;
@@ -48,11 +55,15 @@ public class CartId implements Serializable {
         this.quantity = quantity;
     }
 
-    public int decrease (int quantity){this.quantity = Math.max(0,this.quantity-quantity); return quantity;}
+    public int decrease(int quantity) {
+        this.quantity = Math.max(0, this.quantity - quantity);
+        return quantity;
+    }
 
-    public int increase (int quantity){
+    public int increase(int quantity) {
         this.quantity += quantity;
-        return quantity;}
+        return quantity;
+    }
 
     // must override the hashCode and equals methods:
     @Override
