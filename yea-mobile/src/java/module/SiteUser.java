@@ -141,6 +141,10 @@ public class SiteUser implements Serializable {
             else
                 cart.setId(id);
             save(false);
+            
+            if (0 == getProductQuantity(product)) {
+                removeFromCart(product);
+            }
             return "/cart.xhtml?faces-redirect=true";
     }
     
