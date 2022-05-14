@@ -6,6 +6,8 @@ import database.Queries;
 import java.io.Serializable;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.persistence.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -26,8 +28,8 @@ public class UserOrder implements Serializable {
     private Date orderDate;
     private String destCity;
     private String destStreet;
-    private int destHouseNumber;
-    private String zip;
+    private String destHouseNumber;
+    private Integer zip;
     private boolean provided;
     private double totalPrice;
 
@@ -52,7 +54,7 @@ public class UserOrder implements Serializable {
     public UserOrder() {
     }
 
-    public UserOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment, Set<Cart> products, SiteUser user) {
+    public UserOrder(String destCity, String destStreet, String destHouseNumber, int zip, Payment payment, Set<Cart> products, SiteUser user) {
         this.orderDate = Calendar.getInstance().getTime();
         this.destCity = destCity;
         this.destStreet = destStreet;
@@ -84,8 +86,54 @@ public class UserOrder implements Serializable {
         return new ArrayList<>(user.getOrdersOfUser());
     }
 
-    public void save() {
+    private boolean isValidZip() {
+        Pattern p = Pattern.compile("^\\d{7}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = p.matcher(this.zip.toString());
+        return matcher.find();
+    }
+
+    private boolean isValidOrder() {
+        boolean flag = true;
+
+        if (this.destCity == null ||
+                this.destCity.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("City name can't be empty!");
+        }
+
+        if (this.destStreet == null ||
+                this.destStreet.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("Street name can't be empty!");
+        }
+
+        if (this.destHouseNumber == null ||
+                this.destHouseNumber.isEmpty()) {
+            flag = false;
+            ErrorReporter.addError("House number can't be empty!");
+        }
+
+        if (!isValidZip()) {
+            flag = false;
+            ErrorReporter.addError("Invalid ZIP, Should be 7 digits");
+        }
+
+        if (!isProvided()) {
+            flag = false;
+            ErrorReporter.addError("Payment is missing. Please select payment method");
+        }
+
+        return flag;
+
+    }
+
+    public String save() {
+        if (!isValidOrder()) {
+            return "/user.xhtml?faces-redirect=false";
+        }
+
         Queries.getInstance().saveOrder(this);
+        return "/user.xhtml?faces-redirect=true";
     }
 
     public Set<Cart> getIncludedProducts() {
@@ -167,19 +215,19 @@ public class UserOrder implements Serializable {
         this.destStreet = destStreet;
     }
 
-    public int getDestHouseNumber() {
+    public String getDestHouseNumber() {
         return destHouseNumber;
     }
 
-    public void setDestHouseNumber(int destHouseNumber) {
+    public void setDestHouseNumber(String destHouseNumber) {
         this.destHouseNumber = destHouseNumber;
     }
 
-    public String getZip() {
+    public int getZip() {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip(int zip) {
         this.zip = zip;
     }
 

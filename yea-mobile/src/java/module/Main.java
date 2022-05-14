@@ -35,10 +35,10 @@ public class Main {
         siteUser1.getPayments().add(payment2);
 
         // define orders:
-        UserOrder userOrder1 = new UserOrder("Har Adar", "Main Street", 12,
-                "AB123", payment1, null, null);
-        UserOrder userOrder2 = new UserOrder("Har Adar", "Main Street", 23,
-                "AB124", payment1, null, null);
+        UserOrder userOrder1 = new UserOrder("Har Adar", "Main Street", "12",
+                1234567, payment1, null, null);
+        UserOrder userOrder2 = new UserOrder("Har Adar", "Main Street", "23A",
+                1231234, payment1, null, null);
 
         Set<UserOrder> userOrderSet = new HashSet<>();
         userOrderSet.add(userOrder1);

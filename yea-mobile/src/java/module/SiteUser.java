@@ -158,7 +158,7 @@ public class SiteUser implements Serializable {
     }
 
 
-    public void checkoutCartToOrder(String destCity, String destStreet, int destHouseNumber, String zip, Payment payment) {
+    public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, int zip, Payment payment) {
         for (Cart current : products){
             if(current.getProduct().getInStock() < current.getId().getQuantity()) {
                 ErrorReporter.addError(current.getProduct().getName()+ " quantity is not available");
@@ -257,7 +257,7 @@ public class SiteUser implements Serializable {
             ErrorReporter.addError("Password can't be empty!");
         }
         if (this.birthDate == null ||
-                this.birthDate.before(new GregorianCalendar(1900, 1, 1).getTime()) ||
+                this.birthDate.before(new GregorianCalendar(1900, Calendar.JANUARY, 1).getTime()) ||
                 this.birthDate.after(Calendar.getInstance().getTime())) {
             flag = false;
             ErrorReporter.addError("Birthdate need to be between 1900 and today");
