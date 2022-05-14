@@ -129,11 +129,11 @@ public class UserOrder implements Serializable {
 
     public String save() {
         if (!isValidOrder()) {
-            return "/user.xhtml?faces-redirect=false";
+            return "/order.xhtml?faces-redirect=false";
         }
 
         Queries.getInstance().saveOrder(this);
-        return "/user.xhtml?faces-redirect=true";
+        return "/order.xhtml?faces-redirect=true";
     }
 
     public Set<Cart> getIncludedProducts() {
