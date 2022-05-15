@@ -62,7 +62,7 @@ public class SiteUser implements Serializable {
     @ManyToMany
     @JoinTable(name = "user_payments",
             joinColumns = { @JoinColumn(name = "username") },
-            inverseJoinColumns = { @JoinColumn(name = "users") })
+            inverseJoinColumns = { @JoinColumn(name = "creditNumber") })
     private Set<Payment> payments = new HashSet<>();
 
     // -------------------------------------------
