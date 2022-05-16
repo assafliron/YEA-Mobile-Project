@@ -55,7 +55,6 @@ public class SiteUser implements Serializable {
     @OneToMany(mappedBy = "SiteUser")
     private Set<Cart> products = new HashSet<>();
 
-    // TODO - good? - YES
     @OneToMany(targetEntity = UserOrder.class)
     private Set<UserOrder> orders;
 

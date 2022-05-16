@@ -33,7 +33,7 @@ public class UserOrder implements Serializable {
     private boolean provided;
     private double totalPrice;
 
-    @OneToMany(targetEntity = Product.class) //TODO: @ELAD should be manyTOone ? , products changed to SET<>
+    @OneToMany(targetEntity = Product.class) // to be able to access the list of products
     Set<Cart> products; // similar to "cart"
 
     @ManyToOne

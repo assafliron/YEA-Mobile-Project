@@ -268,7 +268,7 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all order query
-        TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class); //TODO @Elad verify the query
+        TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class);
 
         ArrayList<UserOrder> rs = new ArrayList<>(query.getResultList());
         entityManager.close();
@@ -282,26 +282,27 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all Payment query
-        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad verify the query
+        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class);
 
         ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
         entityManager.close();
         return rs;
     }
 
-    public ArrayList<Payment> getPaymentOfUser(SiteUser user) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        // get all Payment query
-        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad to verify the query  where  "user"!
-
-        ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
-        entityManager.close();
-        return rs;
-    }
+    // TODO @Yishi - check if we need this method
+//    public ArrayList<Payment> getPaymentOfUser(SiteUser user) {
+//        if (!entityManagerFactory.isOpen()) {
+//            ErrorReporter.addError("Connection to DB failed");
+//            return null;
+//        }
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//        // get all Payment query
+//        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad to verify the query  where  "user"!
+//
+//        ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
+//        entityManager.close();
+//        return rs;
+//    }
 
     public ArrayList<Product> getProductsList() {
         if (!entityManagerFactory.isOpen()) {
@@ -310,7 +311,7 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         // get all products query
-        TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);//TODO @Elad verify the query
+        TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);
 
         ArrayList<Product> rs = new ArrayList<>(query.getResultList());
         entityManager.close();
