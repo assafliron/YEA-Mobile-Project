@@ -97,7 +97,7 @@ public class Payment {
         }
         users.add(user);
         Queries.getInstance().savePayment(this);
-        return "/index.xhtml?faces-redirect=true";
+        return "/payment.xhtml?faces-redirect=true";
     }
 
     public void updatePayment(Payment payment) {
