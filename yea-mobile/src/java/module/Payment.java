@@ -97,6 +97,10 @@ public class Payment {
         }
         users.add(user);
         Queries.getInstance().savePayment(this);
+
+        if(!user.getPayments().contains(this))
+            user.addPayment(this);
+
         return "/payment.xhtml?faces-redirect=true";
     }
 

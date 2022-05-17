@@ -60,8 +60,8 @@ public class SiteUser implements Serializable {
 
     @ManyToMany
     @JoinTable(name = "user_payments",
-            joinColumns = { @JoinColumn(name = "username") },
-            inverseJoinColumns = { @JoinColumn(name = "creditNumber") })
+            joinColumns = {@JoinColumn(name = "username")},
+            inverseJoinColumns = {@JoinColumn(name = "creditNumber")})
     private Set<Payment> payments = new HashSet<>();
 
     // -------------------------------------------
@@ -112,7 +112,7 @@ public class SiteUser implements Serializable {
         return "/cart.xhtml?faces-redirect=true";
     }
 
-    
+
     // remove the product form the cart
     public void removeFromCart(Product product) {
         Cart cart = findCart(product);
@@ -127,26 +127,26 @@ public class SiteUser implements Serializable {
 
     // decrease product quantity by 1
     public String decreaseProductFromCart(Product product) {
-            Cart cart = findCart(product);
-            if (cart == null) {
-                ErrorReporter.addError("Product not found");
-                return "/product.xhtml?faces-redirect=false";
-            }
+        Cart cart = findCart(product);
+        if (cart == null) {
+            ErrorReporter.addError("Product not found");
+            return "/product.xhtml?faces-redirect=false";
+        }
 
-            CartId id = cart.getId();
-            id.decrease(1);
-            if(id.getQuantity() == 0)
-                Queries.getInstance().deleteCart(cart);
-            else
-                cart.setId(id);
-            save(false);
-            
-            if (0 == getProductQuantity(product)) {
-                removeFromCart(product);
-            }
-            return "/cart.xhtml?faces-redirect=true";
+        CartId id = cart.getId();
+        id.decrease(1);
+        if (id.getQuantity() == 0)
+            Queries.getInstance().deleteCart(cart);
+        else
+            cart.setId(id);
+        save(false);
+
+        if (0 == getProductQuantity(product)) {
+            removeFromCart(product);
+        }
+        return "/cart.xhtml?faces-redirect=true";
     }
-    
+
     // Get the product's quantity in this user's cart
     public int getProductQuantity(Product product) {
         Cart cart = findCart(product);
@@ -158,14 +158,14 @@ public class SiteUser implements Serializable {
 
 
     public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, int zip, Payment payment) {
-        for (Cart current : products){
-            if(current.getProduct().getInStock() < current.getId().getQuantity()) {
-                ErrorReporter.addError(current.getProduct().getName()+ " quantity is not available");
+        for (Cart current : products) {
+            if (current.getProduct().getInStock() < current.getId().getQuantity()) {
+                ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
                 return;
             }
         }
-        for (Cart current : products){
-            current.getProduct().setInStock(current.getProduct().getInStock()-current.getId().getQuantity());
+        for (Cart current : products) {
+            current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
             current.getProduct().save(false);
         }
         UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
@@ -174,18 +174,19 @@ public class SiteUser implements Serializable {
         save(false);
 
     }
+
     //return a map of product -> amount in this user's cart
     public Map<Product, Integer> getCartItemsMap() {
         Map<Product, Integer> map = new HashMap<Product, Integer>();
-        if (products ==null)
+        if (products == null)
             return map;
-        for (Cart cart:products){
-            map.put(cart.getProduct(),cart.getId().getQuantity());
-                    }
+        for (Cart cart : products) {
+            map.put(cart.getProduct(), cart.getId().getQuantity());
+        }
         return map;
     }
 
-    
+
     public double getCartTotalPrice() {
         double sum = 0;
         for (Cart cart : products) {
@@ -267,30 +268,39 @@ public class SiteUser implements Serializable {
 
     public String save(boolean newUser) {
         if (!isValidUser()) {
-            return "/user.xhtml?faces-redirect=false"; 
+            return "/user.xhtml?faces-redirect=false";
         }
         if (newUser && !isNewUser()) {
             ErrorReporter.addError("User already exist");
-            return "/user.xhtml?faces-redirect=false"; 
+            return "/user.xhtml?faces-redirect=false";
         }
         Queries.getInstance().saveUser(this);
         return "/user.xhtml?faces-redirect=true";
     }
 
-    public void updateUser (SiteUser user){
+    public void updateUser(SiteUser user) {
         this.active = user.active;
         this.products = user.products;
         this.password = user.password;
-        this.lastName =user.lastName;
+        this.lastName = user.lastName;
         this.username = user.username;
-        this.birthDate =user.birthDate;
-        this.email =user.email;
-        this.firstName =user.firstName;
-        this.manager =user.manager;
-        this.orders =user.orders;
-        this.payments =user.payments;
-        this.phoneNumber =user.phoneNumber;
-        this.registrationDate =user.registrationDate;
+        this.birthDate = user.birthDate;
+        this.email = user.email;
+        this.firstName = user.firstName;
+        this.manager = user.manager;
+        this.orders = user.orders;
+        this.payments = user.payments;
+        this.phoneNumber = user.phoneNumber;
+        this.registrationDate = user.registrationDate;
+    }
+
+    public void addPayment(Payment payment) {
+
+        payments.add(payment);
+        save(false);
+        if (!payment.getUsers().contains(this))
+            payment.save(this);
+
     }
 
     public static ArrayList<SiteUser> getUsersList() {
@@ -324,8 +334,8 @@ public class SiteUser implements Serializable {
 
     public static SiteUser find(String username, String password) {
         SiteUser user = Queries.getInstance().getUser(username);
-        if(user != null && user.password.equals(password))
-                return user;
+        if (user != null && user.password.equals(password))
+            return user;
         return null;
     }
 
@@ -431,7 +441,6 @@ public class SiteUser implements Serializable {
 
         return payments;
     }
-
 
 
     public void setPayments(Set<Payment> payments) {

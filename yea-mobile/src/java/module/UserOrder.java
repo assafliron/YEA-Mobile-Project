@@ -87,7 +87,7 @@ public class UserOrder implements Serializable {
     }
 
     private boolean isValidZip() {
-        Pattern p = Pattern.compile("^\\d{7}$", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile("^\\d{7}$");
         Matcher matcher = p.matcher(this.zip.toString());
         return matcher.find();
     }
