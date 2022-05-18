@@ -303,12 +303,11 @@ public class SiteUser implements Serializable {
     }
     
     public void addPayment(Payment payment) {
-
-        payments.add(payment);
-        save(false);
-        if (!payment.getUsers().contains(this))
-            payment.save(this);
-
+        if (!payments.contains(payment)) {
+            payments.add(payment);
+            save(false);
+            payment.addUser(this);
+        }
     }
 
     public static ArrayList<SiteUser> getUsersList() {

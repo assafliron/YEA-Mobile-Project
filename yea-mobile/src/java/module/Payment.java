@@ -91,16 +91,19 @@ public class Payment {
         return flag;
     }
 
-    public String save(SiteUser user) {
+    public String addUser(SiteUser user) {
+        if (!users.contains(user)) {
+            users.add(user);
+            user.addPayment(this);
+        }
+        return save();
+    }
+
+    public String save() {
         if (!isValidPayment()) {
             return "/payment.xhtml?faces-redirect=false";
         }
-        users.add(user);
         Queries.getInstance().savePayment(this);
-
-        if(!user.getPayments().contains(this))
-            user.addPayment(this);
-
         return "/payment.xhtml?faces-redirect=true";
     }
 
