@@ -2,6 +2,7 @@ package module;
 
 import Utils.ErrorReporter;
 import database.Queries;
+import java.io.Serializable;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -16,7 +17,7 @@ import static module.UserOrder.getOrdersList;
 @ManagedBean
 @RequestScoped
 @Entity
-public class Payment {
+public class Payment implements Serializable {
     @Id
     @GeneratedValue
     private String creditNumber;
@@ -192,5 +193,22 @@ public class Payment {
 
     public void setCvvCode(Integer cvvCode) {
         this.cvvCode = cvvCode;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Payment payment = (Payment) o;
+        return creditNumber.equals(payment.creditNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(creditNumber);
     }
 }
