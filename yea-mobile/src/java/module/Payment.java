@@ -113,7 +113,7 @@ public class Payment {
         this.users = payment.users;
     }
 
-    public static String edit(Long creditNumber) {
+    public static String edit(String creditNumber) {
 //        Payment payment = null;
 //        for (Payment p : getPaymentsList()) {
 //            if (creditNumber.equals(p.creditNumber)) {
@@ -127,7 +127,7 @@ public class Payment {
         return "/payment.xhtml?faces-redirect=true";
     }
 
-    public static String delete(Long creditNumber) {
+    public static String delete(String creditNumber) {
         Payment removedPayment = Queries.getInstance().deletePayment(creditNumber);
         if (removedPayment == null) {
             ErrorReporter.addError("Payment doesn't exist in the first place...");

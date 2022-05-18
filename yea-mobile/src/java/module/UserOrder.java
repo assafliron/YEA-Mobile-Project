@@ -64,7 +64,11 @@ public class UserOrder implements Serializable {
         this.paymentUsed = payment;
         this.user = user;
         products = new HashSet<>();
-        this.products.addAll(products);
+        if (this.products == null) {
+            this.products = products;
+        } else {
+            this.products.addAll(products);
+        }
         totalPrice = calcOrderTotalPrice();
         Queries.getInstance().saveOrder(this);
 

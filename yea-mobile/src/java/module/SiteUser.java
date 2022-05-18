@@ -294,6 +294,14 @@ public class SiteUser implements Serializable {
         this.registrationDate = user.registrationDate;
     }
 
+    public String createPayment() {
+        Payment payment = new Payment();
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        sessionMap.put("user", this);
+        sessionMap.put("payment", payment);
+        return "payment.xhtml?faces-redirect=true";
+    }
+    
     public void addPayment(Payment payment) {
 
         payments.add(payment);

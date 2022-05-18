@@ -171,7 +171,7 @@ public class Queries {
         return rs;
     }
 
-    public Payment getPayment(Long creditNumber) {
+    public Payment getPayment(String creditNumber) {
         if (!entityManagerFactory.isOpen()) {
             ErrorReporter.addError("Connection to DB failed");
             return null;
@@ -216,7 +216,7 @@ public class Queries {
 
     }
 
-    public Payment deletePayment(Long creditCard) {
+    public Payment deletePayment(String creditCard) {
         if (!entityManagerFactory.isOpen()) {
             ErrorReporter.addError("Connection to DB failed");
             return null;
