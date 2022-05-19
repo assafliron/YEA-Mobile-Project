@@ -301,13 +301,18 @@ public class SiteUser implements Serializable {
         sessionMap.put("payment", payment);
         return "payment.xhtml?faces-redirect=true";
     }
-    
+
     public void addPayment(Payment payment) {
+        payment.addUserToPayment(this);
+        addPaymentToUser(payment);
+    }
+
+    public void addPaymentToUser(Payment payment) {
         if (!payments.contains(payment)) {
             payments.add(payment);
             save(false);
-            payment.addUser(this);
         }
+
     }
 
     public static ArrayList<SiteUser> getUsersList() {

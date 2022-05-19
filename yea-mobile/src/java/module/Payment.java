@@ -2,6 +2,7 @@ package module;
 
 import Utils.ErrorReporter;
 import database.Queries;
+
 import java.io.Serializable;
 
 import java.util.*;
@@ -93,9 +94,18 @@ public class Payment implements Serializable {
     }
 
     public String addUser(SiteUser user) {
+        if(user==null) {
+            ErrorReporter.addError("Invalid user");
+            return "/payment.xhtml?faces-redirect=false";
+        }
+        user.addPaymentToUser(this);
+        return addUserToPayment(user);
+    }
+
+
+    public String addUserToPayment(SiteUser user) {
         if (!users.contains(user)) {
             users.add(user);
-            user.addPayment(this);
         }
         return save();
     }
@@ -194,7 +204,7 @@ public class Payment implements Serializable {
     public void setCvvCode(Integer cvvCode) {
         this.cvvCode = cvvCode;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
