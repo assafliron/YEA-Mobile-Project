@@ -22,8 +22,6 @@ public class Queries {
     private Queries() {
     }
 
-    ;
-
     // Opened and closed automatically in SiteListener on server start & end, respectively
     EntityManagerFactory entityManagerFactory;
 
@@ -72,6 +70,40 @@ public class Queries {
 
         else
             findPayment.updatePayment(payment);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+    
+    public void savePaymentToUser(Payment payment, SiteUser user) {
+       if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        
+        Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
+        if (findPayment != null) {
+            findPayment.updatePayment(payment);
+            payment = findPayment;
+        }
+        
+        SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
+        if (findUser != null) {
+            findUser.updateUser(user);
+            user = findUser;
+        }
+        
+        payment.getUsers().add(user);
+        user.getPayments().add(payment);
+        
+        if (findPayment == null) {
+            entityManager.persist(payment);
+        }
+        
+        if (findUser == null) {
+            entityManager.persist(user);
+        }
+        
         entityManager.getTransaction().commit();
         entityManager.close();
     }

@@ -93,28 +93,12 @@ public class Payment implements Serializable {
         return flag;
     }
 
-    public String addUser(SiteUser user) {
+    public String save(SiteUser user) {
         if(user==null) {
             ErrorReporter.addError("Invalid user");
             return "/payment.xhtml?faces-redirect=false";
-        }
-        user.addPaymentToUser(this);
-        return addUserToPayment(user);
-    }
-
-
-    public String addUserToPayment(SiteUser user) {
-        if (!users.contains(user)) {
-            users.add(user);
-        }
-        return save();
-    }
-
-    public String save() {
-        if (!isValidPayment()) {
-            return "/payment.xhtml?faces-redirect=false";
-        }
-        Queries.getInstance().savePayment(this);
+        }  
+        Queries.getInstance().savePaymentToUser(this, user);
         return "/payment.xhtml?faces-redirect=true";
     }
 
@@ -128,13 +112,6 @@ public class Payment implements Serializable {
     }
 
     public static String edit(String creditNumber) {
-//        Payment payment = null;
-//        for (Payment p : getPaymentsList()) {
-//            if (creditNumber.equals(p.creditNumber)) {
-//                payment = p; 
-//                break;
-//            }
-//        }
         Payment payment = Queries.getInstance().getPayment(creditNumber);
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("payment", payment);
@@ -160,16 +137,7 @@ public class Payment implements Serializable {
     }
 
     public static Set<Payment> getPaymentsOfUser(SiteUser user) {
-//        ArrayList<Payment> paymentsOfUser = new ArrayList<>();
-//        for (Payment payment : getPaymentsList()) {
-//            if (payment.users.contains(user)) {
-//                paymentsOfUser.add(payment);
-//            }
-//        }
-//        return paymentsOfUser;
-        {
             return user.getPayments();
-        }
     }
 
     // Getters and Setters:

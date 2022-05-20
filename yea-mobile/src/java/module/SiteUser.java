@@ -157,22 +157,27 @@ public class SiteUser implements Serializable {
     }
 
 
-    public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, int zip, Payment payment) {
-        for (Cart current : products) {
-            if (current.getProduct().getInStock() < current.getId().getQuantity()) {
-                ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
-                return;
-            }
-        }
-        for (Cart current : products) {
-            current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
-            current.getProduct().save(false);
-        }
-        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
-        orders.add(order);
-        products.clear();
-        save(false);
+    public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, String zip, String creditNumber) {
+// @TODO: Yishai:
+//  1. Translate the string zip into int (including validation)
+//  2. Do all the things that are necessary for the checkout in *ONE* transaction to the database, in one function in Queries.
+//          Look at Queries.savePaymentToUser() for reference.
 
+
+//        for (Cart current : products) {
+//            if (current.getProduct().getInStock() < current.getId().getQuantity()) {
+//                ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
+//                return;
+//            }
+//        }
+//        for (Cart current : products) {
+//            current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
+//            current.getProduct().save(false);
+//        }
+//        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
+//        orders.add(order);
+//        products.clear();
+//        save(false);
     }
 
     //return a map of product -> amount in this user's cart
@@ -300,19 +305,6 @@ public class SiteUser implements Serializable {
         sessionMap.put("user", this);
         sessionMap.put("payment", payment);
         return "payment.xhtml?faces-redirect=true";
-    }
-
-    public void addPayment(Payment payment) {
-        payment.addUserToPayment(this);
-        addPaymentToUser(payment);
-    }
-
-    public void addPaymentToUser(Payment payment) {
-        if (!payments.contains(payment)) {
-            payments.add(payment);
-            save(false);
-        }
-
     }
 
     public static ArrayList<SiteUser> getUsersList() {

@@ -90,13 +90,14 @@
                     <div class="form-group row">  
                         <h:outputLabel for="Payment" class="control-label col-sm-4 text-right">Select Payment</h:outputLabel>
                         <div class="col-sm-4">  
-                            <h:selectOneRadio value="#{selectedPayment}">
-                                <f:selectItems value="#{loggedUser.payments}" />
+                            <h:selectOneRadio value="#{selectedPayment}" layout="pageDirection">
+                                <f:selectItems value="#{loggedUser.payments}" 
+                                               var="entry" itemValue="#{entry.creditNumber}" itemLabel="#{entry.creditNumber}"/>
                             </h:selectOneRadio>  
                         </div>  
                     </div>
 
-                    <center><h:commandButton action = "#{loggedUser.checkoutCartToOrder(selectedDestCity.value, SelecteDestStreet.value, selectedDestHouseNumber.value, selectedDestHouseNumber.value, selectedZip.value, selectedPayment.value)}"   
+                    <center><h:commandButton action = "#{loggedUser.checkoutCartToOrder(selectedDestCity, SelecteDestStreet, selectedDestHouseNumber, selectedZip, selectedPayment)}"   
                                              value="Check Out" class="btn btn-success"></h:commandButton></center>
                 </h:form>
             </ui:define>
