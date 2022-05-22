@@ -158,26 +158,24 @@ public class SiteUser implements Serializable {
 
 
     public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, String zip, String creditNumber) {
-// @TODO: Yishai:
-//  1. Translate the string zip into int (including validation)
-//  2. Do all the things that are necessary for the checkout in *ONE* transaction to the database, in one function in Queries.
-//          Look at Queries.savePaymentToUser() for reference.
 
+        for (Cart current : products) {
+            if (current.getProduct().getInStock() < current.getId().getQuantity()) {
+                ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
+                return;
+            }
+        }
+        for (Cart current : products) {
+            current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
 
-//        for (Cart current : products) {
-//            if (current.getProduct().getInStock() < current.getId().getQuantity()) {
-//                ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
-//                return;
-//            }
-//        }
-//        for (Cart current : products) {
-//            current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
-//            current.getProduct().save(false);
-//        }
-//        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
-//        orders.add(order);
-//        products.clear();
-//        save(false);
+        }
+        Payment payment = Queries.getInstance().getPayment(creditNumber);
+        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
+        orders.add(order);
+        products.clear();
+
+        Queries.getInstance().checkoutCartToOrder(this,order);
+
     }
 
     //return a map of product -> amount in this user's cart
@@ -439,11 +437,7 @@ public class SiteUser implements Serializable {
     }
 
     public Set<Payment> getPayments() {
-
-       /* Set<Payment> rs = new HashSet<>(Queries.getInstance().getPaymentOfUser(this));
-        return rs;*/ //TODO: yishai
-
-        return payments;
+               return payments;
     }
 
 

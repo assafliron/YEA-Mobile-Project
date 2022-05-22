@@ -29,7 +29,7 @@ public class UserOrder implements Serializable {
     private String destCity;
     private String destStreet;
     private String destHouseNumber;
-    private Integer zip;
+    private String zip;
     private boolean provided;
     private double totalPrice;
 
@@ -54,7 +54,7 @@ public class UserOrder implements Serializable {
     public UserOrder() {
     }
 
-    public UserOrder(String destCity, String destStreet, String destHouseNumber, int zip, Payment payment, Set<Cart> products, SiteUser user) {
+    public UserOrder(String destCity, String destStreet, String destHouseNumber, String zip, Payment payment, Set<Cart> products, SiteUser user) {
         this.orderDate = Calendar.getInstance().getTime();
         this.destCity = destCity;
         this.destStreet = destStreet;
@@ -92,7 +92,7 @@ public class UserOrder implements Serializable {
 
     private boolean isValidZip() {
         Pattern p = Pattern.compile("^\\d{7}$");
-        Matcher matcher = p.matcher(this.zip.toString());
+        Matcher matcher = p.matcher(this.zip);
         return matcher.find();
     }
 
@@ -161,9 +161,7 @@ public class UserOrder implements Serializable {
     }
 
     public void updateOrder(UserOrder order) {
-        this.products = order.products;
         this.user = order.user;
-        this.destCity = order.destCity;
         this.destHouseNumber = order.destHouseNumber;
         this.destStreet = order.destStreet;
         this.oid = order.oid;
@@ -227,11 +225,11 @@ public class UserOrder implements Serializable {
         this.destHouseNumber = destHouseNumber;
     }
 
-    public int getZip() {
+    public String getZip() {
         return zip;
     }
 
-    public void setZip(int zip) {
+    public void setZip(String zip) {
         this.zip = zip;
     }
 

@@ -73,40 +73,89 @@ public class Queries {
         entityManager.getTransaction().commit();
         entityManager.close();
     }
-    
+
     public void savePaymentToUser(Payment payment, SiteUser user) {
-       if (!entityManagerFactory.isOpen()) {
+        if (!entityManagerFactory.isOpen()) {
             ErrorReporter.addError("Connection to DB failed");
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        
+
         Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
         if (findPayment != null) {
             findPayment.updatePayment(payment);
             payment = findPayment;
         }
-        
+
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
         if (findUser != null) {
             findUser.updateUser(user);
             user = findUser;
         }
-        
+
         payment.getUsers().add(user);
         user.getPayments().add(payment);
-        
+
         if (findPayment == null) {
             entityManager.persist(payment);
         }
-        
+
         if (findUser == null) {
             entityManager.persist(user);
         }
-        
+
         entityManager.getTransaction().commit();
         entityManager.close();
     }
+
+    public void checkoutCartToOrder(SiteUser user, UserOrder order) {
+        if (!entityManagerFactory.isOpen()) {
+            ErrorReporter.addError("Connection to DB failed");
+        }
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+
+        UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
+        if (findOrder != null) {
+            findOrder.updateOrder(order);
+            order = findOrder;
+        }
+        else
+            entityManager.persist(order);
+
+        SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
+        if (findUser != null) {
+            findUser.updateUser(user);
+            user = findUser;
+        }
+        else
+            entityManager.persist(user);
+
+
+        for (Cart c : order.getIncludedProducts()) {
+            Cart findCart = entityManager.find(Cart.class, c.getId());
+            if (findCart != null) {
+                findCart.updateCart(c);
+                c = findCart;
+            }
+            else
+                entityManager.persist(c);
+        }
+
+        Payment findPayment = entityManager.find(Payment.class, order.getPaymentUsed().getCreditNumber());
+        if (findPayment != null) {
+            findPayment.updatePayment(order.getPaymentUsed());
+            order.setPaymentUsed(findPayment);
+        }
+        else
+            entityManager.persist(order.getPaymentUsed());
+
+
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+
 
     public void saveCart(Cart cart) {
         if (!entityManagerFactory.isOpen()) {
@@ -321,20 +370,6 @@ public class Queries {
         return rs;
     }
 
-    // TODO @Yishi - check if we need this method
-//    public ArrayList<Payment> getPaymentOfUser(SiteUser user) {
-//        if (!entityManagerFactory.isOpen()) {
-//            ErrorReporter.addError("Connection to DB failed");
-//            return null;
-//        }
-//        EntityManager entityManager = entityManagerFactory.createEntityManager();
-//        // get all Payment query
-//        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class); //TODO @Elad to verify the query  where  "user"!
-//
-//        ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
-//        entityManager.close();
-//        return rs;
-//    }
 
     public ArrayList<Product> getProductsList() {
         if (!entityManagerFactory.isOpen()) {
