@@ -179,12 +179,16 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
-        if (findOrder == null)
+        if (order.getOid() == null) {
             entityManager.persist(order);
-
-        else
-            findOrder.updateOrder(order);
+        } else {
+            UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
+            if (findOrder == null)
+                entityManager.persist(order);
+            else
+                findOrder.updateOrder(order);
+        }
+        
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -406,3 +410,4 @@ public class Queries {
 
     }
 }
+

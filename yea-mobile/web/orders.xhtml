@@ -48,14 +48,14 @@
                             <h:outputText value="#{o.provided}"/>  
                         </h:column>
                         <h:column>  
-                            <f:facet name="header">Edit</f:facet>  
+                            <f:facet name="header">Details</f:facet>  
                             <h:commandButton action = "#{userOrder.edit(o.oid)}" value="Details" class="btn btn-primary">  
                             </h:commandButton>  
                         </h:column>  
                         <c:if test="#{loginController.isManagerLoggedIn()}">
                             <h:column>  
                                 <f:facet name="header">Delete</f:facet>  
-                                <h:commandButton action = "#{o.delete(o.pid)}" value="Delete" class="btn btn-danger">  
+                                <h:commandButton action = "#{o.delete(o.oid)}" value="Delete" class="btn btn-danger">  
                                 </h:commandButton>  
                             </h:column>  
                         </c:if>

@@ -97,6 +97,7 @@
                             </div>  
                         </div>
                     </c:if>
+                    <c:if test="#{user.username != null}">
                     <div class="form-group row">
                         <h:outputLabel for="payments" class="control-label col-sm-4 text-right">Payments</h:outputLabel>
                         <div class="col-sm-4">
@@ -127,7 +128,7 @@
                             </h:form>
                         </div>
                     </div>
-
+                    </c:if>
                     <div class="form-group row">  
                         <div class="col-sm-4"></div>  
                         <div class="col-sm-4">  

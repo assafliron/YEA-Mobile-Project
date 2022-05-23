@@ -52,10 +52,10 @@ public class SiteUser implements Serializable {
     private boolean active;
 
     // relations:
-    @OneToMany(mappedBy = "SiteUser")
+    @OneToMany(mappedBy = "SiteUser", orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Set<Cart> products = new HashSet<>();
 
-    @OneToMany(targetEntity = UserOrder.class)
+    @OneToMany(targetEntity = UserOrder.class, orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Set<UserOrder> orders;
 
     @ManyToMany
@@ -135,15 +135,15 @@ public class SiteUser implements Serializable {
 
         CartId id = cart.getId();
         id.decrease(1);
-        if (id.getQuantity() == 0)
+        if (id.getQuantity() == 0) {
             Queries.getInstance().deleteCart(cart);
+            products.remove(cart);
+        }
         else
             cart.setId(id);
+
         save(false);
 
-        if (0 == getProductQuantity(product)) {
-            removeFromCart(product);
-        }
         return "/cart.xhtml?faces-redirect=true";
     }
 
@@ -158,7 +158,28 @@ public class SiteUser implements Serializable {
 
 
     public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, String zip, String creditNumber) {
-
+        if (destCity == null || destCity.isEmpty()) {
+            ErrorReporter.addError("must provide city");
+            return;
+        }
+        if (destStreet == null || destStreet.isEmpty()) {
+            ErrorReporter.addError("must provide street number");
+            return;
+        }
+        if (destHouseNumber == null || destHouseNumber.isEmpty()) {
+            ErrorReporter.addError("must provide house number");
+            return;
+        }
+        if (zip == null || zip.isEmpty()) {
+            ErrorReporter.addError("must provide zip code");
+            return;
+        }
+        if (creditNumber == null || creditNumber.isEmpty()) {
+            ErrorReporter.addError("must provide payment");
+            return;
+        }       
+        
+        
         for (Cart current : products) {
             if (current.getProduct().getInStock() < current.getId().getQuantity()) {
                 ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
