@@ -5,6 +5,7 @@ import javax.persistence.*;
 import javax.servlet.*;
 import javax.servlet.annotation.WebListener;
 import module.SiteUser;
+import java.util.Date;
 
 @WebListener
 public class SiteListener implements ServletContextListener {
@@ -33,6 +34,7 @@ public class SiteListener implements ServletContextListener {
         admin.setLastName("user");
         admin.setEmail("admin@gmail.com");
         admin.setPhoneNumber("0546664440");
+        admin.setBirthDate(new Date(2000, 10, 10));
         admin.setActive(true);
         admin.setManager(true);
         Queries.getInstance().saveUser(admin);

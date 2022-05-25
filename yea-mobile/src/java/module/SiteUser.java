@@ -87,7 +87,7 @@ public class SiteUser implements Serializable {
 
     private Cart findCart(Product product) {
         for (Cart current : products)
-            if (current.getProduct() == product)
+            if (current.getProduct().equals(product))
                 return current;
         return null;
 
@@ -96,6 +96,10 @@ public class SiteUser implements Serializable {
     // increase product quantity by 1
     // 1. if this product already exists in this user's cart, then increase the quantity by 1
     // 2. If this product doesn't exist in the cart, then add it with quantity = 1
+    public String increaseProduct(Product product) {
+        addToCart(product);
+        return "/cart.xhtml?faces-redirect=true";
+    }
     public String addToCart(Product product) {
         Cart cart = findCart(product);
         if (cart == null) {
@@ -103,27 +107,26 @@ public class SiteUser implements Serializable {
             products.add(cart);
             Queries.getInstance().saveCart(cart);
             save(false);
-            return "/product.xhtml?faces-redirect=false";
+            return "/product.xhtml?faces-redirect=true";
         }
         CartId id = cart.getId();
         id.increase(1);
-        cart.setId(id);
         save(false);
-        return "/cart.xhtml?faces-redirect=true";
+        return "/product.xhtml?faces-redirect=true";
     }
 
 
-    // remove the product form the cart
-    public void removeFromCart(Product product) {
-        Cart cart = findCart(product);
-        if (cart == null) {
-            ErrorReporter.addError("Product doesn't exist");
-            return;
-        }
-        products.remove(cart);
-        Queries.getInstance().deleteCart(cart);
-        save(false);
-    }
+//    // remove the product form the cart
+//    public void removeFromCart(Product product) {
+//        Cart cart = findCart(product);
+//        if (cart == null) {
+//            ErrorReporter.addError("Product doesn't exist");
+//            return;
+//        }
+//        products.remove(cart);
+//        Queries.getInstance().deleteCart(cart);
+//        save(false);
+//    }
 
     // decrease product quantity by 1
     public String decreaseProductFromCart(Product product) {
@@ -139,11 +142,6 @@ public class SiteUser implements Serializable {
             Queries.getInstance().deleteCart(cart);
             products.remove(cart);
         }
-        else
-            cart.setId(id);
-
-        save(false);
-
         return "/cart.xhtml?faces-redirect=true";
     }
 

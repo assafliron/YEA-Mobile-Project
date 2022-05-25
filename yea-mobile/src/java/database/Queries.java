@@ -88,13 +88,11 @@ public class Queries {
         }
 
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
-        if (findUser != null) {
-            findUser.updateUser(user);
-            user = findUser;
-        }
-
+        findUser.updateUser(user);
+        
         payment.getUsers().add(user);
-        user.getPayments().add(payment);
+        findUser.getPayments().add(payment);
+        user.updateUser(findUser);
 
         if (findPayment == null) {
             entityManager.persist(payment);
@@ -114,14 +112,8 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-
-        UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
-        if (findOrder != null) {
-            findOrder.updateOrder(order);
-            order = findOrder;
-        }
-        else
-            entityManager.persist(order);
+        
+        entityManager.persist(order);
 
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
         if (findUser != null) {
@@ -317,7 +309,7 @@ public class Queries {
         return removedPayment;
 
     }
-
+    
     public Cart deleteCart(Cart cart) {
         if (!entityManagerFactory.isOpen()) {
             ErrorReporter.addError("Connection to DB failed");
@@ -329,7 +321,6 @@ public class Queries {
         entityManager.getTransaction().commit();
         entityManager.close();
         return cart;
-
     }
 
     public ArrayList<SiteUser> getUserList() {

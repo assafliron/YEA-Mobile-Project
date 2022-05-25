@@ -78,6 +78,7 @@ public class CartId implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
         CartId cartId = (CartId) o;
-        return Objects.equals(username, cartId.username) && Objects.equals(productId, cartId.productId);
+        return username.equals(cartId.username) && productId.equals(cartId.productId);
     }
 }
+

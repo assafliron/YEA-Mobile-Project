@@ -128,11 +128,6 @@ public class Payment implements Serializable {
     }
 
     public static ArrayList<Payment> getPaymentsList() {
-//        return new ArrayList<Payment>() {{
-//           add(new Payment() {{
-//               setCreditNumber((long)1234444);
-//           }});
-//        }};
         return Queries.getInstance().getPaymentList();
     }
 
