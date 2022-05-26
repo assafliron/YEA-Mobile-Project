@@ -139,8 +139,9 @@ public class SiteUser implements Serializable {
         CartId id = cart.getId();
         id.decrease(1);
         if (id.getQuantity() == 0) {
-            Queries.getInstance().deleteCart(cart);
             products.remove(cart);
+            cart.getProduct().getUsersCarts().remove(cart);
+            Queries.getInstance().deleteCart(cart);
         }
         return "/cart.xhtml?faces-redirect=true";
     }

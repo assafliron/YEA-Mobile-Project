@@ -35,7 +35,6 @@ public class Queries {
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
         if (findUser == null)
             entityManager.persist(user);
-
         else
             findUser.updateUser(user);
         entityManager.getTransaction().commit();
@@ -89,7 +88,7 @@ public class Queries {
 
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
         findUser.updateUser(user);
-        
+
         payment.getUsers().add(user);
         findUser.getPayments().add(payment);
         user.updateUser(findUser);
@@ -112,24 +111,25 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        
-        entityManager.persist(order);
+
+        UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
+        if (findOrder != null)
+            findOrder.updateOrder(order);
+        else
+            entityManager.persist(order);
 
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
-        if (findUser != null) {
+        if (findUser != null)
             findUser.updateUser(user);
-            user = findUser;
-        }
+
         else
             entityManager.persist(user);
 
-
         for (Cart c : order.getIncludedProducts()) {
             Cart findCart = entityManager.find(Cart.class, c.getId());
-            if (findCart != null) {
+            if (findCart != null)
                 findCart.updateCart(c);
-                c = findCart;
-            }
+
             else
                 entityManager.persist(c);
         }
@@ -138,15 +138,13 @@ public class Queries {
         if (findPayment != null) {
             findPayment.updatePayment(order.getPaymentUsed());
             order.setPaymentUsed(findPayment);
-        }
-        else
+        } else
             entityManager.persist(order.getPaymentUsed());
 
 
         entityManager.getTransaction().commit();
         entityManager.close();
     }
-
 
 
     public void saveCart(Cart cart) {
@@ -180,7 +178,7 @@ public class Queries {
             else
                 findOrder.updateOrder(order);
         }
-        
+
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -309,7 +307,7 @@ public class Queries {
         return removedPayment;
 
     }
-    
+
     public Cart deleteCart(Cart cart) {
         if (!entityManagerFactory.isOpen()) {
             ErrorReporter.addError("Connection to DB failed");
@@ -317,6 +315,20 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
+
+        SiteUser findUser = entityManager.find(SiteUser.class, cart.getSiteUser().getUsername());
+        if (findUser == null)
+            entityManager.persist(cart.getSiteUser());
+        else
+            findUser.updateUser(cart.getSiteUser());
+
+        Product findProduct = entityManager.find(Product.class, cart.getProduct().getPid());
+        if (findProduct == null)
+            entityManager.persist(cart.getProduct());
+
+        else
+            findProduct.updateProduct(cart.getProduct());
+
         entityManager.remove(cart);
         entityManager.getTransaction().commit();
         entityManager.close();
