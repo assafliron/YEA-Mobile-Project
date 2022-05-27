@@ -111,12 +111,8 @@ public class Queries {
         }
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-
-        UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
-        if (findOrder != null)
-            findOrder.updateOrder(order);
-        else
-            entityManager.persist(order);
+        
+        entityManager.persist(order);
 
         SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
         if (findUser != null)
@@ -129,7 +125,6 @@ public class Queries {
             Cart findCart = entityManager.find(Cart.class, c.getId());
             if (findCart != null)
                 findCart.updateCart(c);
-
             else
                 entityManager.persist(c);
         }
@@ -413,4 +408,5 @@ public class Queries {
 
     }
 }
+
 

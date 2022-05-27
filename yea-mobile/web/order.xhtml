@@ -51,7 +51,7 @@
                         <h:outputLabel for="destCity" class="control-label col-sm-4 text-right">Destination City</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="destCity-id" value="#{order.destCity}" class="form-control"   
-                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
+                                         disabled="#{order.provided}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -59,7 +59,7 @@
                         <h:outputLabel for="destStreet" class="control-label col-sm-4 text-right">Destination Street</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="destStreet-id" value="#{order.destStreet}" class="form-control"   
-                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
+                                         disabled="#{order.provided}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -67,7 +67,7 @@
                         <h:outputLabel for="destHouseNumber" class="control-label col-sm-4 text-right">Destination House Number</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="destHouseNumber-id" value="#{order.destHouseNumber}" class="form-control"   
-                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
+                                         disabled="#{order.provided}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -75,7 +75,7 @@
                         <h:outputLabel for="zip" class="control-label col-sm-4 text-right">Zip Code</h:outputLabel>  
                         <div class="col-sm-4">  
                             <h:inputText id="zip-id" value="#{order.zip}" class="form-control"   
-                                         disabled="#{not(loginController.isManagerLoggedIn())}">  
+                                         disabled="#{order.provided}">  
                             </h:inputText>  
                         </div>  
                     </div>
@@ -95,6 +95,27 @@
                             </h:selectBooleanCheckbox>
                         </div>  
                     </div>
+
+                    <h:dataTable binding="#{table}" value="#{order.getOrderItemsMap()}" var="productEntry"   
+                                 class="table table-striped table-hover table-bordered">
+                        <h:column>  
+                            <f:facet name="header"></f:facet>  
+                            <h:outputText value="#{table.rowIndex + 1}"/>  
+                        </h:column>  
+                        <h:column>  
+                            <f:facet name="header">Product</f:facet>  
+                            <h:outputText value="#{productEntry.key.name}"/>  
+                        </h:column>
+                        <h:column>  
+                            <f:facet name="header">Quantity ordered</f:facet>  
+                            <h:outputText value="#{productEntry.value}"/>  
+                        </h:column>
+                        <h:column>  
+                            <f:facet name="header">Total Price</f:facet>  
+                            <h:outputText value="#{productEntry.key.price * productEntry.value}"/>  
+                        </h:column> 
+                    </h:dataTable>
+
                     <div class="form-group row">  
                         <h:outputLabel for="totalPrice" class="control-label col-sm-4 text-right">Total Price</h:outputLabel>  
                         <div class="col-sm-4">  
@@ -104,19 +125,17 @@
                         </div>  
                     </div>
 
-                    <c:if test="#{loginController.isManagerLoggedIn()}">
-                        <div class="form-group row">  
-                            <div class="col-sm-4"></div>  
-                            <div class="col-sm-4">  
-                                <div class="col-sm-2"> 
-                                    <h:commandButton value="Save" action="#{order.save()}" class="btn btn-success"   
-                                                     style="width: 80px;"></h:commandButton>  
-                                </div>  
-                                <div class="col-sm-1">  
-                                </div>  
+                    <div class="form-group row">  
+                        <div class="col-sm-4"></div>  
+                        <div class="col-sm-4">  
+                            <div class="col-sm-2"> 
+                                <h:commandButton value="Save" action="#{order.save()}" class="btn btn-success"   
+                                                 style="width: 80px;"></h:commandButton>  
                             </div>  
-                        </div>
-                    </c:if>  
+                            <div class="col-sm-1">  
+                            </div>  
+                        </div>  
+                    </div>
                 </h:form>  
             </ui:define>
         </ui:composition>  

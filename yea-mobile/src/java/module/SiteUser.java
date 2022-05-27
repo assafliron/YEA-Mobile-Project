@@ -156,33 +156,33 @@ public class SiteUser implements Serializable {
     }
 
 
-    public void checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, String zip, String creditNumber) {
+    public String checkoutCartToOrder(String destCity, String destStreet, String destHouseNumber, String zip, String creditNumber) {
         if (destCity == null || destCity.isEmpty()) {
             ErrorReporter.addError("must provide city");
-            return;
+            return "/cart.xhtml?faces-redirect=false";
         }
         if (destStreet == null || destStreet.isEmpty()) {
             ErrorReporter.addError("must provide street number");
-            return;
+            return "/cart.xhtml?faces-redirect=false";
         }
         if (destHouseNumber == null || destHouseNumber.isEmpty()) {
             ErrorReporter.addError("must provide house number");
-            return;
+            return "/cart.xhtml?faces-redirect=false";
         }
         if (zip == null || zip.isEmpty()) {
             ErrorReporter.addError("must provide zip code");
-            return;
+            return "/cart.xhtml?faces-redirect=false";
         }
         if (creditNumber == null || creditNumber.isEmpty()) {
             ErrorReporter.addError("must provide payment");
-            return;
+            return "/cart.xhtml?faces-redirect=false";
         }       
         
         
         for (Cart current : products) {
             if (current.getProduct().getInStock() < current.getId().getQuantity()) {
                 ErrorReporter.addError(current.getProduct().getName() + " quantity is not available");
-                return;
+            return "/cart.xhtml?faces-redirect=false";
             }
         }
         for (Cart current : products) {
@@ -191,11 +191,14 @@ public class SiteUser implements Serializable {
         }
         Payment payment = Queries.getInstance().getPayment(creditNumber);
         UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
+        if (!order.isValidOrder()) {
+            return "/cart.xhtml?faces-redirect=false";
+        }
         orders.add(order);
         products.clear();
 
         Queries.getInstance().checkoutCartToOrder(this,order);
-
+        return "/cart.xhtml?faces-redirect=true";
     }
 
     //return a map of product -> amount in this user's cart

@@ -70,8 +70,6 @@ public class UserOrder implements Serializable {
             this.products.addAll(products);
         }
         totalPrice = calcOrderTotalPrice();
-        Queries.getInstance().saveOrder(this);
-
     }
 
     private double calcOrderTotalPrice() {
@@ -96,7 +94,7 @@ public class UserOrder implements Serializable {
         return matcher.find();
     }
 
-    private boolean isValidOrder() {
+    public boolean isValidOrder() {
         boolean flag = true;
 
         if (this.destCity == null ||
@@ -122,7 +120,7 @@ public class UserOrder implements Serializable {
             ErrorReporter.addError("Invalid ZIP, Should be 7 digits");
         }
 
-        if (!isProvided()) {
+        if (paymentUsed == null) {
             flag = false;
             ErrorReporter.addError("Payment is missing. Please select payment method");
         }
@@ -245,4 +243,22 @@ public class UserOrder implements Serializable {
         return totalPrice;
     }
 
+    public void setUser(SiteUser user) {
+        this.user = user;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+    
+     //return a map of product -> amount in this order
+    public Map<Product, Integer> getOrderItemsMap() {
+        Map<Product, Integer> map = new HashMap<Product, Integer>();
+        if (products == null)
+            return map;
+        for (Cart cart : products) {
+            map.put(cart.getProduct(), cart.getId().getQuantity());
+        }
+        return map;
+    }
 }
