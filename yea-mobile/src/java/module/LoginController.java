@@ -31,7 +31,11 @@ public class LoginController {
             username = null;
             password = null;
             return null;
+        } else if (!user.isActive()) {
+            ErrorReporter.addError("User is no longer active");
+            return null;
         } else {
+            
             context.getExternalContext().getSessionMap().put(LOGGED_USER, user);
             return "index?faces-redirect=true";
         }

@@ -32,10 +32,7 @@ public class UserOrder implements Serializable {
     private String zip;
     private boolean provided;
     private double totalPrice;
-
-    // to be able to access the list of products
-    @OneToMany(targetEntity = Product.class, orphanRemoval = true, cascade = CascadeType.ALL)
-    Set<Cart> products; // similar to "cart"
+    
 
     @ManyToOne
     private Payment paymentUsed;
@@ -61,7 +58,7 @@ public class UserOrder implements Serializable {
     public UserOrder() {
     }
 
-    public UserOrder(String destCity, String destStreet, String destHouseNumber, String zip, Payment payment, Set<Cart> products, SiteUser user) {
+    public UserOrder(String destCity, String destStreet, String destHouseNumber, String zip, Payment payment, double totalPrice, SiteUser user) {
         this.orderDate = Calendar.getInstance().getTime();
         this.destCity = destCity;
         this.destStreet = destStreet;
@@ -70,23 +67,8 @@ public class UserOrder implements Serializable {
         this.provided = false;
         this.paymentUsed = payment;
         this.user = user;
-        products = new HashSet<>();
-        if (this.products == null) {
-            this.products = products;
-        } else {
-            this.products.addAll(products);
-        }
-        totalPrice = calcOrderTotalPrice();
-    }
 
-
-
-    private double calcOrderTotalPrice() {
-        double sum = 0;
-        for (Cart cart : products) {
-            sum += cart.getProduct().getPrice() * cart.getId().getQuantity();
-        }
-        return sum;
+        this.totalPrice = totalPrice;
     }
 
     public static ArrayList<UserOrder> getOrdersList() {
@@ -147,10 +129,6 @@ public class UserOrder implements Serializable {
         return "/order.xhtml?faces-redirect=true";
     }
 
-    public Set<Cart> getIncludedProducts() {
-        return products;
-    }
-
     public SiteUser getUser() {
         return user;
     }
@@ -175,7 +153,6 @@ public class UserOrder implements Serializable {
         this.orderDate = order.orderDate;
         this.paymentUsed = order.paymentUsed;
         this.provided = order.provided;
-        this.products = order.products;
         this.destCity = order.destCity;
         this.totalPrice = order.totalPrice;
         this.zip = order.zip;
@@ -258,16 +235,5 @@ public class UserOrder implements Serializable {
 
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
-    }
-    
-     //return a map of product -> amount in this order
-    public Map<Product, Integer> getOrderItemsMap() {
-        Map<Product, Integer> map = new HashMap<Product, Integer>();
-        if (products == null)
-            return map;
-        for (Cart cart : products) {
-            map.put(cart.getProduct(), cart.getId().getQuantity());
-        }
-        return map;
     }
 }

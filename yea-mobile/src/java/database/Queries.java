@@ -22,369 +22,478 @@ public class Queries {
     private Queries() {
     }
 
+    private final String GENERAL_ERROR_MESSAGE = "ERROR: Unexpected internal error, please try again";
+    
     // Opened and closed automatically in SiteListener on server start & end, respectively
     EntityManagerFactory entityManagerFactory;
 
     public void saveUser(SiteUser user) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            // adding the user:
+            SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
+            if (findUser == null) {
+                entityManager.persist(user);
+            } else {
+                findUser.updateUser(user);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        // adding the user:
-        SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
-        if (findUser == null)
-            entityManager.persist(user);
-        else
-            findUser.updateUser(user);
-        entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public void saveProduct(Product product) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Product findProduct = entityManager.find(Product.class, product.getPid());
+            if (findProduct == null) {
+                entityManager.persist(product);
+            } else {
+                findProduct.updateProduct(product);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Product findProduct = entityManager.find(Product.class, product.getPid());
-        if (findProduct == null)
-            entityManager.persist(product);
-
-        else
-            findProduct.updateProduct(product);
-        entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public void savePayment(Payment payment) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
+            if (findPayment == null) {
+                entityManager.persist(payment);
+            } else {
+                findPayment.updatePayment(payment);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
-        if (findPayment == null)
-            entityManager.persist(payment);
-
-        else
-            findPayment.updatePayment(payment);
-        entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public void savePaymentToUser(Payment payment, SiteUser user) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
+            if (findPayment != null) {
+                findPayment.updatePayment(payment);
+                payment = findPayment;
+            }
+
+            SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
+            findUser.updateUser(user);
+
+            payment.getUsers().add(user);
+            findUser.getPayments().add(payment);
+            user.updateUser(findUser);
+
+            if (findPayment == null) {
+                entityManager.persist(payment);
+            }
+
+            if (findUser == null) {
+                entityManager.persist(user);
+            }
+
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-
-        Payment findPayment = entityManager.find(Payment.class, payment.getCreditNumber());
-        if (findPayment != null) {
-            findPayment.updatePayment(payment);
-            payment = findPayment;
-        }
-
-        SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
-        findUser.updateUser(user);
-
-        payment.getUsers().add(user);
-        findUser.getPayments().add(payment);
-        user.updateUser(findUser);
-
-        if (findPayment == null) {
-            entityManager.persist(payment);
-        }
-
-        if (findUser == null) {
-            entityManager.persist(user);
-        }
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public void checkoutCartToOrder(SiteUser user, UserOrder order) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            entityManager.persist(order);
+    
+            for (Cart current : user.getProducts()) {
+                current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
+            }
+            
+            user.getOrders().add(order);
+            user.getProducts().clear();
+            
+            SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
+            if (findUser != null) {
+                findUser.updateUser(user);
+            } else {
+                entityManager.persist(user);
+            }
+            
+
+            Payment findPayment = entityManager.find(Payment.class, order.getPaymentUsed().getCreditNumber());
+            if (findPayment != null) {
+                findPayment.updatePayment(order.getPaymentUsed());
+                order.setPaymentUsed(findPayment);
+            } else {
+                entityManager.persist(order.getPaymentUsed());
+            }
+
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        
-        entityManager.persist(order);
-
-        SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
-        if (findUser != null)
-            findUser.updateUser(user);
-
-        else
-            entityManager.persist(user);
-
-        for (Cart c : order.getIncludedProducts()) {
-            Cart findCart = entityManager.find(Cart.class, c.getId());
-            if (findCart != null)
-                findCart.updateCart(c);
-            else
-                entityManager.persist(c);
-        }
-
-        Payment findPayment = entityManager.find(Payment.class, order.getPaymentUsed().getCreditNumber());
-        if (findPayment != null) {
-            findPayment.updatePayment(order.getPaymentUsed());
-            order.setPaymentUsed(findPayment);
-        } else
-            entityManager.persist(order.getPaymentUsed());
-
-
-        entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
-
     public void saveCart(Cart cart) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        Cart findCart = entityManager.find(Cart.class, cart.getId());
-        if (findCart == null)
-            entityManager.persist(cart);
+        saveCart(cart, null);
+    }
 
-        else
-            findCart.updateCart(cart);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+    public void saveCart(Cart cart, SiteUser user) {
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Cart findCart = entityManager.find(Cart.class, cart.getId());
+            if (findCart == null) {
+                entityManager.persist(cart);
+            } else {
+                findCart.updateCart(cart);
+            }
+            if (user != null) {
+                user.getProducts().add(cart);
+            }
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
     }
 
     public void saveOrder(UserOrder order) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-        if (order.getOid() == null) {
-            entityManager.persist(order);
-        } else {
-            UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
-            if (findOrder == null)
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            if (order.getOid() == null) {
                 entityManager.persist(order);
-            else
-                findOrder.updateOrder(order);
-        }
+            } else {
+                UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
+                if (findOrder == null) {
+                    entityManager.persist(order);
+                } else {
+                    findOrder.updateOrder(order);
+                }
+            }
 
-        entityManager.getTransaction().commit();
-        entityManager.close();
+            entityManager.getTransaction().commit();
+            entityManager.close();
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
     }
 
     public boolean isNewUser(SiteUser user) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            boolean rs = !entityManager.contains(user);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        boolean rs = !entityManager.contains(user);
-        entityManager.close();
-        return rs;
-
+        return false;
     }
 
     public boolean isNewProduct(Product product) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            boolean rs = !entityManager.contains(product);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        boolean rs = !entityManager.contains(product);
-        entityManager.close();
-        return rs;
+        return false;
     }
 
     public boolean isNewPayment(Payment payment) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            boolean rs = !entityManager.contains(payment);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        boolean rs = !entityManager.contains(payment);
-        entityManager.close();
-        return rs;
+        return false;
     }
 
     public SiteUser getUser(String username) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            SiteUser rs = entityManager.find(SiteUser.class, username);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        SiteUser rs = entityManager.find(SiteUser.class, username);
-        entityManager.close();
-        return rs;
+        return null;
     }
 
-
     public UserOrder getOrder(int oid) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            UserOrder rs = entityManager.find(UserOrder.class, oid);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        UserOrder rs = entityManager.find(UserOrder.class, oid);
-        entityManager.close();
-        return rs;
+        return null;
     }
 
     public Product getProduct(int pid) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Product rs = entityManager.find(Product.class, pid);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Product rs = entityManager.find(Product.class, pid);
-        entityManager.close();
-        return rs;
+        return null;
     }
 
     public Payment getPayment(String creditNumber) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Payment rs = entityManager.find(Payment.class, creditNumber);
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Payment rs = entityManager.find(Payment.class, creditNumber);
-        entityManager.close();
-        return rs;
+        return null;
     }
 
     public SiteUser deleteUser(String username) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            SiteUser removedUser = entityManager.find(SiteUser.class, username);
+            if (removedUser != null) {
+                entityManager.getTransaction().begin();
+                entityManager.remove(removedUser);
+                entityManager.getTransaction().commit();
+            }
+            entityManager.close();
+            return removedUser;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        SiteUser removedUser = entityManager.find(SiteUser.class, username);
-        if (removedUser != null) {
-            entityManager.getTransaction().begin();
-            entityManager.remove(removedUser);
-            entityManager.getTransaction().commit();
-        }
-        entityManager.close();
-        return removedUser;
-
+        return null;
     }
 
     public Product deleteProduct(int pid) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Product removedProduct = entityManager.find(Product.class, pid);
+            if (removedProduct != null) {
+                entityManager.getTransaction().begin();
+                entityManager.remove(removedProduct);
+                entityManager.getTransaction().commit();
+            }
+            entityManager.close();
+            return removedProduct;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Product removedProduct = entityManager.find(Product.class, pid);
-        if (removedProduct != null) {
-            entityManager.getTransaction().begin();
-            entityManager.remove(removedProduct);
-            entityManager.getTransaction().commit();
-        }
-        entityManager.close();
-        return removedProduct;
-
+        return null;
     }
 
     public Payment deletePayment(String creditCard) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Payment removedPayment = entityManager.find(Payment.class, creditCard);
-        if (removedPayment != null) {
-            entityManager.getTransaction().begin();
-            entityManager.remove(removedPayment);
-            entityManager.getTransaction().commit();
-        }
-        entityManager.close();
-        return removedPayment;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Payment removedPayment = entityManager.find(Payment.class, creditCard);
+            if (removedPayment != null) {
+                entityManager.getTransaction().begin();
+                entityManager.remove(removedPayment);
+                entityManager.getTransaction().commit();
+            }
+            entityManager.close();
+            return removedPayment;
 
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
+        return null;
     }
 
     public Cart deleteCart(Cart cart) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            SiteUser findUser = entityManager.find(SiteUser.class, cart.getSiteUser().getUsername());
+            if (findUser == null) {
+                entityManager.persist(cart.getSiteUser());
+            } else {
+                findUser.updateUser(cart.getSiteUser());
+            }
+
+            Product findProduct = entityManager.find(Product.class, cart.getProduct().getPid());
+            if (findProduct == null) {
+                entityManager.persist(cart.getProduct());
+            } else {
+                findProduct.updateProduct(cart.getProduct());
+            }
+
+            entityManager.remove(cart);
+            entityManager.getTransaction().commit();
+            entityManager.close();
+            return cart;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
         }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        entityManager.getTransaction().begin();
-
-        SiteUser findUser = entityManager.find(SiteUser.class, cart.getSiteUser().getUsername());
-        if (findUser == null)
-            entityManager.persist(cart.getSiteUser());
-        else
-            findUser.updateUser(cart.getSiteUser());
-
-        Product findProduct = entityManager.find(Product.class, cart.getProduct().getPid());
-        if (findProduct == null)
-            entityManager.persist(cart.getProduct());
-
-        else
-            findProduct.updateProduct(cart.getProduct());
-
-        entityManager.remove(cart);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-        return cart;
+        return null;
     }
 
     public ArrayList<SiteUser> getUserList() {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        // get all users query
-        TypedQuery<SiteUser> query = entityManager.createQuery("SELECT u FROM SiteUser u", SiteUser.class);
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            // get all users query
+            TypedQuery<SiteUser> query = entityManager.createQuery("SELECT u FROM SiteUser u", SiteUser.class);
 
-        ArrayList<SiteUser> rs = new ArrayList<>(query.getResultList());
-        entityManager.close();
-        return rs;
+            ArrayList<SiteUser> rs = new ArrayList<>(query.getResultList());
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
+        return null;
     }
 
     public ArrayList<UserOrder> getOrderList() {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        // get all order query
-        TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class);
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            // get all order query
+            TypedQuery<UserOrder> query = entityManager.createQuery("SELECT u FROM UserOrder u", UserOrder.class);
 
-        ArrayList<UserOrder> rs = new ArrayList<>(query.getResultList());
-        entityManager.close();
-        return rs;
+            ArrayList<UserOrder> rs = new ArrayList<>(query.getResultList());
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
+        return null;
     }
 
     public ArrayList<Payment> getPaymentList() {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        // get all Payment query
-        TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class);
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            // get all Payment query
+            TypedQuery<Payment> query = entityManager.createQuery("SELECT u FROM Payment u", Payment.class);
 
-        ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
-        entityManager.close();
-        return rs;
+            ArrayList<Payment> rs = new ArrayList<>(query.getResultList());
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
+        return null;
     }
 
-
     public ArrayList<Product> getProductsList() {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        // get all products query
-        TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            // get all products query
+            TypedQuery<Product> query = entityManager.createQuery("SELECT u FROM Product u", Product.class);
 
-        ArrayList<Product> rs = new ArrayList<>(query.getResultList());
-        entityManager.close();
-        return rs;
+            ArrayList<Product> rs = new ArrayList<>(query.getResultList());
+            entityManager.close();
+            return rs;
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
+        return null;
     }
 
     public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
@@ -392,21 +501,24 @@ public class Queries {
     }
 
     public UserOrder deleteOrder(Integer oid) {
-        if (!entityManagerFactory.isOpen()) {
-            ErrorReporter.addError("Connection to DB failed");
-            return null;
-        }
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        UserOrder removedOrder = entityManager.find(UserOrder.class, oid);
-        if (removedOrder != null) {
-            entityManager.getTransaction().begin();
-            entityManager.remove(removedOrder);
-            entityManager.getTransaction().commit();
-        }
-        entityManager.close();
-        return removedOrder;
+        try {
+            if (!entityManagerFactory.isOpen()) {
+                ErrorReporter.addError("Connection to DB failed");
+                return null;
+            }
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            UserOrder removedOrder = entityManager.find(UserOrder.class, oid);
+            if (removedOrder != null) {
+                entityManager.getTransaction().begin();
+                entityManager.remove(removedOrder);
+                entityManager.getTransaction().commit();
+            }
+            entityManager.close();
+            return removedOrder;
 
+        } catch (Exception e) {
+            ErrorReporter.addError(GENERAL_ERROR_MESSAGE);
+        }
+        return null;
     }
 }
-
-

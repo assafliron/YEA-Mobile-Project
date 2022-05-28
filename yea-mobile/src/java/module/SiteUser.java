@@ -113,9 +113,7 @@ public class SiteUser implements Serializable {
         Cart cart = findCart(product);
         if (cart == null) {
             cart = new Cart(this, product);
-            products.add(cart);
-            Queries.getInstance().saveCart(cart);
-            save(false);
+            Queries.getInstance().saveCart(cart, this);
             return "/product.xhtml?faces-redirect=true";
         }
         CartId id = cart.getId();
@@ -194,17 +192,12 @@ public class SiteUser implements Serializable {
             return "/cart.xhtml?faces-redirect=false";
             }
         }
-        for (Cart current : products) {
-            current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
-
-        }
+        
         Payment payment = Queries.getInstance().getPayment(creditNumber);
-        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, products, this);
+        UserOrder order = new UserOrder(destCity, destStreet, destHouseNumber, zip, payment, getCartTotalPrice(), this);
         if (!order.isValidOrder()) {
             return "/cart.xhtml?faces-redirect=false";
         }
-        orders.add(order);
-        products.clear();
 
         Queries.getInstance().checkoutCartToOrder(this,order);
         return "/cart.xhtml?faces-redirect=true";
