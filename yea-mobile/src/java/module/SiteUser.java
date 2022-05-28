@@ -52,10 +52,10 @@ public class SiteUser implements Serializable {
     private boolean active;
 
     // relations:
-    @OneToMany(mappedBy = "SiteUser", orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "SiteUser", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Cart> products = new HashSet<>();
 
-    @OneToMany(targetEntity = UserOrder.class, orphanRemoval = true, cascade = CascadeType.PERSIST)
+    @OneToMany(targetEntity = UserOrder.class, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<UserOrder> orders;
 
     @ManyToMany
@@ -63,6 +63,15 @@ public class SiteUser implements Serializable {
             joinColumns = {@JoinColumn(name = "username")},
             inverseJoinColumns = {@JoinColumn(name = "creditNumber")})
     private Set<Payment> payments = new HashSet<>();
+
+    @PreRemove
+    private void removeSiteUserFromOtherRelations() {
+        // only payment is not with cascade
+        for (Payment payment: payments){
+            payment.getUsers().remove(this);
+        }
+    }
+
 
     // -------------------------------------------
     // constructor:

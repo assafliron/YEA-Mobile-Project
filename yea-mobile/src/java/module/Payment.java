@@ -34,6 +34,7 @@ public class Payment implements Serializable {
     @OneToMany(mappedBy = "paymentUsed") // in UserOrder
     private Set<UserOrder> ordersUsedIn = new HashSet<>();
 
+
     public Set<UserOrder> getOrdersUsedIn() {
         return ordersUsedIn;
     }
@@ -94,10 +95,10 @@ public class Payment implements Serializable {
     }
 
     public String save(SiteUser user) {
-        if(user==null) {
+        if (user == null) {
             ErrorReporter.addError("Invalid user");
             return "/payment.xhtml?faces-redirect=false";
-        }  
+        }
         Queries.getInstance().savePaymentToUser(this, user);
         return "/payment.xhtml?faces-redirect=true";
     }
@@ -118,6 +119,17 @@ public class Payment implements Serializable {
         return "/payment.xhtml?faces-redirect=true";
     }
 
+    @PreRemove
+    private void removePaymentFromOtherRelations() {
+        for (SiteUser user : users) {
+            user.getPayments().remove(this);
+        }
+
+        for (UserOrder order: ordersUsedIn){
+            order.setPaymentUsed(null);
+        }
+    }
+
     public static String delete(String creditNumber) {
         Payment removedPayment = Queries.getInstance().deletePayment(creditNumber);
         if (removedPayment == null) {
@@ -132,7 +144,7 @@ public class Payment implements Serializable {
     }
 
     public static Set<Payment> getPaymentsOfUser(SiteUser user) {
-            return user.getPayments();
+        return user.getPayments();
     }
 
     // Getters and Setters:

@@ -48,7 +48,12 @@ public class Product {
     @OneToMany(mappedBy = "Product")
     private Set<Cart> usersCarts = new HashSet<>();
 
-    // TODO לאחר בדיקה בבסיס הנתונים לבדוק האם יש צורך לכתוב גם פה את הקשרים
+    @PreRemove
+    private void removeProductFromOtherRelations() {
+        for (Cart usersCart: usersCarts){
+            usersCart.setProduct(null);
+        }
+    }
 
     private boolean isNewProduct(Product product){
         return Queries.getInstance().isNewProduct(product);

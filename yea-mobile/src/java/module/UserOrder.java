@@ -33,7 +33,8 @@ public class UserOrder implements Serializable {
     private boolean provided;
     private double totalPrice;
 
-    @OneToMany(targetEntity = Product.class) // to be able to access the list of products
+    // to be able to access the list of products
+    @OneToMany(targetEntity = Product.class, orphanRemoval = true, cascade = CascadeType.ALL)
     Set<Cart> products; // similar to "cart"
 
     @ManyToOne
@@ -47,9 +48,15 @@ public class UserOrder implements Serializable {
         this.paymentUsed = paymentUsed;
     }
 
-    // TODO - good? - Yes
     @ManyToOne
     private SiteUser user;
+
+    @PreRemove
+    private void removeUserOrderFromOtherRelations() {
+        user.getOrders().remove(this); // remove from SiteUser
+        paymentUsed.getOrdersUsedIn().remove(this); // remove from Payment
+    }
+
 
     public UserOrder() {
     }
@@ -71,6 +78,8 @@ public class UserOrder implements Serializable {
         }
         totalPrice = calcOrderTotalPrice();
     }
+
+
 
     private double calcOrderTotalPrice() {
         double sum = 0;
