@@ -134,8 +134,16 @@ public class Queries {
 
             entityManager.persist(order);
     
+
             for (Cart current : user.getProducts()) {
                 current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
+                Product findProduct = entityManager.find(Product.class, current.getProduct());
+                if (findProduct != null) {
+                    findProduct.updateProduct(current.getProduct());
+                } else {
+                    entityManager.persist(current.getProduct());
+                }
+
             }
             
             user.getOrders().add(order);
@@ -147,7 +155,6 @@ public class Queries {
             } else {
                 entityManager.persist(user);
             }
-            
 
             Payment findPayment = entityManager.find(Payment.class, order.getPaymentUsed().getCreditNumber());
             if (findPayment != null) {
@@ -155,6 +162,13 @@ public class Queries {
                 order.setPaymentUsed(findPayment);
             } else {
                 entityManager.persist(order.getPaymentUsed());
+            }
+
+            UserOrder findOrder = entityManager.find(UserOrder.class, order.getOid());
+            if (findOrder == null) {
+                entityManager.persist(order);
+            } else {
+                findOrder.updateOrder(order);
             }
 
             entityManager.getTransaction().commit();
