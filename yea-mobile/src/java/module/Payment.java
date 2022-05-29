@@ -99,6 +99,10 @@ public class Payment implements Serializable {
             ErrorReporter.addError("Invalid user");
             return "/payment.xhtml?faces-redirect=false";
         }
+        if (!isValidPayment()) {
+            return "/payment.xhtml?faces-redirect=false";
+        }
+        
         Queries.getInstance().savePaymentToUser(this, user);
         return "/payment.xhtml?faces-redirect=true";
     }

@@ -200,7 +200,9 @@ public class SiteUser implements Serializable {
         }
 
         Queries.getInstance().checkoutCartToOrder(this,order);
-        return "/cart.xhtml?faces-redirect=true";
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        sessionMap.put("order", order);
+        return "/order.xhtml?faces-redirect=true";
     }
 
     //return a map of product -> amount in this user's cart
@@ -301,6 +303,9 @@ public class SiteUser implements Serializable {
         if (newUser && !isNewUser()) {
             ErrorReporter.addError("User already exist");
             return "/user.xhtml?faces-redirect=false";
+        }
+        if (newUser) {
+            setActive(true);
         }
         Queries.getInstance().saveUser(this);
         return "/user.xhtml?faces-redirect=true";

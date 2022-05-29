@@ -137,7 +137,7 @@ public class Queries {
 
             for (Cart current : user.getProducts()) {
                 current.getProduct().setInStock(current.getProduct().getInStock() - current.getId().getQuantity());
-                Product findProduct = entityManager.find(Product.class, current.getProduct());
+                Product findProduct = entityManager.find(Product.class, current.getProduct().getPid());
                 if (findProduct != null) {
                     findProduct.updateProduct(current.getProduct());
                 } else {
@@ -147,6 +147,10 @@ public class Queries {
             }
             
             user.getOrders().add(order);
+            for (Cart current : user.getProducts()) {
+                entityManager.remove(current);
+            }
+            
             user.getProducts().clear();
             
             SiteUser findUser = entityManager.find(SiteUser.class, user.getUsername());
@@ -536,3 +540,4 @@ public class Queries {
         return null;
     }
 }
+

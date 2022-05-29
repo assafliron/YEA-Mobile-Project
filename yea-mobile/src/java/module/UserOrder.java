@@ -163,7 +163,7 @@ public class UserOrder implements Serializable {
         UserOrder removedOrder = Queries.getInstance().deleteOrder(oid);
         if (removedOrder == null) {
             ErrorReporter.addError("order not exists!");
-            return "/order.xhtml?faces-redirect=false";
+            return "/orders.xhtml?faces-redirect=false";
         }
         return "/orders.xhtml?faces-redirect=true";
     }
