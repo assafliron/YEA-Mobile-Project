@@ -1,4 +1,6 @@
-package module;/*
+
+package module;
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
  */
@@ -13,11 +15,6 @@ import javax.faces.context.FacesContext;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Map;
-
-/**
- *
- * @author assafliron
- */
 
 @Entity
 @ManagedBean
@@ -124,33 +121,10 @@ public class Product {
 
     }
     public static ArrayList<Product> getProductsList() {
-//        ArrayList<Product> productsList = new ArrayList<Product>() {{
-//          Product product = new Product();
-//          product.setPid(1234);
-//          product.setBrand("Apple");
-//          product.setName("Iphone 6s");
-//          product.setColor("Black");
-//          product.setStorageCapacity(16);
-//          product.setWeight(10);
-//          product.setPrice(1500);
-//          product.setOperatingSystem("IOS");
-//          product.setInStock(5);
-//          add(product);
-//        }};
-//       return productsList;
-
         return Queries.getInstance().getProductsList();
     }
 
     public static String edit(int pid) {
-//        Product product = null;
-//        // TODO: Assaf - return the product from the data base instead of from the static list
-//        for (Product p : getProductsList()) {
-//            if (pid.equals(p.pid)) {
-//                product = p;
-//                break;
-//            }
-// }
         Product product = Queries.getInstance().getProduct(pid);
         Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put("product", product);

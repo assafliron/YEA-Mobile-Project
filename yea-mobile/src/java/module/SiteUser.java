@@ -9,12 +9,10 @@ import Utils.ErrorReporter;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import database.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -25,11 +23,7 @@ import javax.persistence.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.persistence.metamodel.EntityType;
 
-/**
- * @author assafliron
- */
 @Entity(name = "SiteUser")
 @Table(name = "SITEUSER")
 @ManagedBean
@@ -123,18 +117,6 @@ public class SiteUser implements Serializable {
     }
 
 
-//    // remove the product form the cart
-//    public void removeFromCart(Product product) {
-//        Cart cart = findCart(product);
-//        if (cart == null) {
-//            ErrorReporter.addError("Product doesn't exist");
-//            return;
-//        }
-//        products.remove(cart);
-//        Queries.getInstance().deleteCart(cart);
-//        save(false);
-//    }
-
     // decrease product quantity by 1
     public String decreaseProductFromCart(Product product) {
         Cart cart = findCart(product);
@@ -205,7 +187,7 @@ public class SiteUser implements Serializable {
         return "/order.xhtml?faces-redirect=true";
     }
 
-    //return a map of product -> amount in this user's cart
+    // return a map of product -> amount in this user's cart
     public Map<Product, Integer> getCartItemsMap() {
         Map<Product, Integer> map = new HashMap<Product, Integer>();
         if (products == null)
@@ -378,6 +360,7 @@ public class SiteUser implements Serializable {
         return "/user.xhtml?faces-redirect=true";
     }
 
+    // get and set methods:
     public String getUsername() {
         return username;
     }

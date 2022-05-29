@@ -7,10 +7,6 @@ package Utils;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-/**
- *
- * @author assafliron
- */
 public class ErrorReporter {
 
     public static void addError(String err) {

@@ -26,6 +26,7 @@ public class SiteListener implements ServletContextListener {
         emf.close();
     }
 
+    // create the first admin if the DB is empty
     private void createAdminUser() {
         SiteUser admin = new SiteUser();
         admin.setUsername("admin");

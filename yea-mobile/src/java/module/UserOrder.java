@@ -32,7 +32,6 @@ public class UserOrder implements Serializable {
     private String zip;
     private boolean provided;
     private double totalPrice;
-    
 
     @ManyToOne
     private Payment paymentUsed;
@@ -117,7 +116,6 @@ public class UserOrder implements Serializable {
         }
 
         return flag;
-
     }
 
     public String save() {
